@@ -33,7 +33,7 @@ Available decorators in Functionly
 
 ## apiGateway
 Define an API gateway endpoint for Lambda
-> usable at [FunctionalService]()
+> usable at [[FunctionalService|classes#functionalservice]]
 
 > **AWS** only, use [rest](#rest) for cross environment
 
@@ -41,9 +41,9 @@ Define an API gateway endpoint for Lambda
 ```js
 @apiGateway({
     path: string,
-    method?: string,
-    cors?: boolean,
-    authorization?: 'AWS_IAM' | 'NONE' | 'CUSTOM' | 'COGNITO_USER_POOLS'
+    method?: string = 'get',
+    cors?: boolean = false,
+    authorization?: 'AWS_IAM' | 'NONE' | 'CUSTOM' | 'COGNITO_USER_POOLS' = 'AWS_IAM'
 })
 ```
 
@@ -57,16 +57,16 @@ class Home extends FunctionalService {}
 
 ## aws
 You can change AWS Lambda basic settings
-> usable at [FunctionalService]()
+> usable at [[FunctionalService|classes#functionalservice]]
 
 > **AWS** only
 
 ### Parameters
 ```js
 @aws({
-    type?: 'nodejs6.10',
-    memorySize?: number,
-    timeout?: number
+    type?: 'nodejs6.10' = 'node6.10',
+    memorySize?: number, // AWS default
+    timeout?: number // AWS default
 })
 ```
 
@@ -79,6 +79,7 @@ class Home extends FunctionalService {}
 
 ## description
 Description of the Functional Service
+> usable at [[FunctionalService|classes#functionalservice]]
 
 ### Parameters
 ```js
@@ -94,7 +95,7 @@ class Home extends FunctionalService {}
 
 ## dynamoTable
 Set up a Dynamo table for the application. It allows you to store data with the app.
-> usable at [DynamoTable]()
+> usable at [[DynamoTable|classes#dynamotable]]
 
 ### Parameters
 ```js
@@ -104,15 +105,19 @@ Set up a Dynamo table for the application. It allows you to store data with the 
     nativeConfig?: any
 })
 ```
+> The created table will be suffixed with the stage name. Read more [[here|Deployment#stage]].
+
+> In the `tableName` and the `envirnmentKey` properties can contain the `%ClassName%` placeholder and it will be replaced with the current class's name.
 
 ### Default values
 #### environmentKey: 
-!!! known issue: environmentKey must end with `_TABLE_NAME`
+This environment variable will contains the current table name
+> !!! Known issue: Do not change the default value
 ```js
 %ClassName%_TABLE_NAME
 ```
 #### nativeConfig
-More information about the native configuration options and its values are [here](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html)
+More information about the native (CloudFormation) configuration options and its values are [here](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html)
 ```js
 {
     AttributeDefinitions: [
@@ -143,7 +148,7 @@ class Users extends DynamoTable {}
 
 ## environment
 You can define an environment variable and the value for the resource.
-> usable at [Resource]()
+> usable at [[Resource|classes#resource]]
 
 ### Parameters
 ```js
@@ -159,7 +164,7 @@ class Home extends FunctionalService {}
 
 ## eventSource
 There are more possibilities to trigger the FunctionalService. You can handle web requests but the code can run when a new record is inserted into the Dynamo table, a file uploaded into S3 or a simple notification service is invoked.
-> usable at [FunctionalService]()
+> usable at [[FunctionalService|classes#functionalservice]]
 
 ### Example
 [AWS example](https://github.com/jaystack/functionly-examples/tree/master/eventSource)
@@ -167,7 +172,9 @@ There are more possibilities to trigger the FunctionalService. You can handle we
 
 ## functionName
 You can set a different name for the FunctionalService then one for the name of the class
-> usable at [FunctionalService]()
+> usable at [[FunctionalService|classes#functionalservice]]
+
+> In **AWS** the created lambda will be suffixed with the stage name. Read more [[here|Deployment#stage]].
 
 ### Parameters
 ```js
@@ -211,7 +218,7 @@ class MyApi extends Api {}
 
 ## log
 In local environment it writes each request to the console
-> usable at [FunctionalService]()
+> usable at [[FunctionalService|classes#functionalservice]]
 
 > **local** only
 
@@ -223,8 +230,8 @@ class Home extends FunctionalService {}
 
 
 ## rest
-Define a REST endpoint for the FunctionalService
-> usable at [FunctionalService]()
+Define a REST endpoint for the FunctionalService. This decorator is a generic way to define a REST endpoint if you use it in **AWS** environment it is works like an [apiGateway](#apigateway).
+> usable at [[FunctionalService|classes#functionalservice]]
 
 ### Parameters
 ```js
@@ -245,7 +252,7 @@ class Home extends FunctionalService {}
 
 ## role
 Set the AWS role name for the FunctionalService - without this, the name of role will be the name of the application, or if you set a specific AWS role resource ID, then that will be used. By default, Functionly will discover the used AWS resources and create a role for the application with the necessary policy.
-> usable at [FunctionalService]()
+> usable at [[FunctionalService|classes#functionalservice]]
 
 > **AWS** only
 
@@ -266,8 +273,8 @@ class Home extends FunctionalService {}
 
 
 ## s3Storage
-Set up an S3 environment for the application. It allows you to store files with the app.
-> usable at [S3Storage]()
+Set up an S3 file storage for the application. It allows you to store files with the app.
+> usable at [[S3Storage|classes#s3storage]]
 
 ### Parameters
 > bucket name has [naming rescricitons](http://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html)
@@ -281,10 +288,11 @@ Set up an S3 environment for the application. It allows you to store files with 
     }
 })
 ```
+> The created S3 file storage will be suffixed with the stage name. Read more [[here|Deployment#stage]].
 
 ### Default values
 #### environmentKey
-!!! known issue: environmentKey must end with `_S3_BUCKET`
+> !!! Known issue: Do not change the default value
 ```js
 %ClassName%_S3_BUCKET
 ```
@@ -303,10 +311,37 @@ More info available [here](http://docs.aws.amazon.com/AWSCloudFormation/latest/U
 class FileStorage extends S3Storage {}
 ```
 
+## sns
+Set up an Simple Notification Service for the application. It allows you to send notifications with the app.
+> usable at [[SimpleNotificationService|classes#simplenotificationservice]]
+
+### Parameters
+```js
+@sns({
+    topicName: string,
+    environmentKey?: string
+})
+```
+> The SNS Topic name will be suffixed with the stage name. Read more [[here|Deployment#stage]].
+
+> The created SNS Topic name will contains an additional random number.
+
+### Default values
+#### environmentKey
+> !!! Known issue: Do not change the default value
+```js
+%ClassName%_SNS_TOPICNAME
+```
+
+### Example
+```js
+@sns({ topicName: 'my-topic'})
+class Notifications extends SimpleNotificationService {}
+```
 
 ## tag
 You can define a tag and the value for the FunctionalService.
-> usable at [FunctionalService]()
+> usable at [[FunctionalService|classes#functionalservice]]
 
 ### Parameters
 ```js
@@ -321,10 +356,10 @@ class Home extends FunctionalService {}
 
 
 ## use
-There is a middleware system in Functionly. You can set [PreHooks]() and [PostHooks]() as middleware for the [FunctionalService](). You can read more about middlewares [here](), or check out the unit tests [here](https://github.com/jaystack/functionly/blob/master/test/hook.tests.ts#L677)
-> usable at [FunctionalService]()
+There is a middleware system in Functionly. You can set [[PreHook|classes#prehook]] and [[PostHook|classes#posthook]] as middleware for the [[FunctionalService|classes#functionalservice]]. You can read more about middlewares [[here|middlewares]], or check out the unit tests [here](https://github.com/jaystack/functionly/blob/master/test/hook.tests.ts#L677)
+> usable at [[FunctionalService|classes#functionalservice]]
 
-> usable at [Hook]()
+> usable at [[Hook|classes#hook]]
 
 ### Parameters
 ```js
@@ -332,6 +367,7 @@ There is a middleware system in Functionly. You can set [PreHooks]() and [PostHo
 ```
 
 ### Example
+The `Authentication` and the `RoleCheck` are [PreHook|classes#prehook]]s and the `ErrorHandler` is a [[PostHook|classes#posthook]]
 ```js
 @use(Authentication)
 @use(RoleCheck)
@@ -346,7 +382,7 @@ class Home extends FunctionalService {}
 
 
 ## inject
-There is a simple dependency injection system in Functionly. After you mark the class with `injectable` decorator, you can inject into the code. Read more about injection [here]()
+There is a simple dependency injection system in Functionly. After you mark the class with `injectable` decorator, you can inject into the code. Read more about injection [[here|dependency-injection]]
 
 ### Parameters
 ```js
@@ -362,7 +398,7 @@ class Home extends FunctionalService {
 
 
 ## param
-With `param` parameter decorator, you can resolve values from event sources. For example, from web requests you can get values from query parameters, from the request body or from the request header. Read more [here]() about how it's working.
+With `param` parameter decorator, you can resolve values from event sources. For example, from web requests you can get values from query parameters, from the request body or from the request header. Read more [[here|parameters]] about how it's working.
 
 ### Parameters
 ```js
@@ -370,15 +406,17 @@ With `param` parameter decorator, you can resolve values from event sources. For
 ```
 
 ### Example
-There are two ways to use `param` decorator
+There are several ways to use `param` decorator
 ```js
 class Home extends FunctionalService {
     public async handle(
+        @param('name') name,
         @param name,
         @param({ property: 'myValue' }) age,
     ) { }
 }
 ```
+The `@param name` is a shortcut here for `@param('name') name`.
 
 
 ## serviceParams
@@ -416,7 +454,7 @@ class Home extends FunctionalService {
 
 
 ## result
-The `result` decorator can resolve the previous middleware result. For example, if you use it within [PostHook]() middleware you can transform the FunctionalService response
+The `result` decorator can resolve the previous middleware result. For example, if you use it within [[PostHook|classes#posthook]]middleware you can transform the FunctionalService response
 
 ### Example
 ```js
@@ -427,7 +465,7 @@ class ResponseTransform extends PostHook {
 
 
 ## error
-It is only usable in [PostHook]()'s catch handler to handle errors in the FunctionalService
+It is only usable in [[PostHook|classes#posthook]]'s catch handler to handle errors in the FunctionalService
 
 ### Example
 ```js
@@ -438,7 +476,7 @@ class ResponseTransform extends PostHook {
 
 
 ## functionalServiceName
-Get the [FunctionalService]()'s name dynamically with `functionalServiceName` decorator in [FunctionalService]() or in any type of [Hooks]()
+Get the [[FunctionalService|classes#functionalservice]]'s name dynamically with `functionalServiceName` decorator in [[FunctionalService|classes#functionalservice]] or in any type of [[Hook|classes#hook]]
 
 ### Example
 ```js
