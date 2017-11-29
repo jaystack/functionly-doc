@@ -107,7 +107,7 @@ Set up a Dynamo table for the application. It allows you to store data with the 
 ```
 > The created table will be suffixed with the stage name. Read more [[here|Deployment#stage]].
 
-> In the `tableName` and the `envirnmentKey` properties can contain the `%ClassName%` placeholder and it will be replaced with the current class's name.
+> In the `tableName` and the `environmentKey` properties can contain the `%ClassName%` placeholder and it will be replaced with the current class's name.
 
 ### Default values
 #### environmentKey: 
@@ -290,6 +290,8 @@ Set up an S3 file storage for the application. It allows you to store files with
 ```
 > The created S3 file storage will be suffixed with the stage name. Read more [[here|Deployment#stage]].
 
+> In the `bucketName` and the `environmentKey` properties can contain the `%ClassName%` placeholder and it will be replaced with the current class's name.
+
 ### Default values
 #### environmentKey
 > !!! Known issue: Do not change the default value
@@ -325,6 +327,8 @@ Set up an Simple Notification Service for the application. It allows you to send
 > The SNS Topic name will be suffixed with the stage name. Read more [[here|Deployment#stage]].
 
 > The created SNS Topic name will contains an additional random number.
+
+> In the `topicName` and the `environmentKey` properties can contain the `%ClassName%` placeholder and it will be replaced with the current class's name.
 
 ### Default values
 #### environmentKey
