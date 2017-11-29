@@ -24,7 +24,7 @@ What can be injectable:
 * any [class](#custom-class)
  
 ### Inject
-The [inject]() parameter decorator is for inject classes what is marked with [injectable](#injectable)
+The [[inject|decorators#inject]] parameter decorator is for inject classes what is marked with [injectable](#injectable)
 
 Where can i use inject
 * [Api](#api)
@@ -59,11 +59,11 @@ Only one instance of the injected type will be create at first time of injection
 ```
 # Usage in functionly
 ## Service resources
-> Service resources (like [DynamoTable](), [S3Storage](), etc...) are just an [Apis](#api)
+> Service resources (like [[DynamoTable|classes#dynamotable]], [[S3Storage|classes#s3storage]], etc...) are just an [Apis](#api)
 ## Api
-[Apis]() are the collection of functions what are contains business logic of the application.
+[[Apis|classes#api]] are the collection of functions what are contains business logic of the application.
 ### Inject usage in Api
-Only the `constructor` function can handle functionly parameter decorators ([inject](), etc..). Parameter value will be an initialized instance of an injected type.
+Only the `constructor` function can handle functionly parameter decorators ([[inject|decorators#inject]], etc..). Parameter value will be an initialized instance of an injected type.
 ```js
 @injectable()
 class MyApi extends Api {
@@ -99,9 +99,9 @@ class MyService extends Service {
 ```
 
 ## Service
-[Services]() are special classes those have a `handle` method what is contains the business logic.
+[[Services|classes#service]] are special classes those have a `handle` method what is contains the business logic.
 ### Inject usage in Services
-Only `handle` function can handle parameter decorators like ([param](), [inject](), etc..). Parameter value will be an initialized instance of an injected type.
+Only `handle` function can handle parameter decorators like ([[param|decorators#param]], [[inject|decorators#inject]], etc..). Parameter value will be an initialized instance of an injected type.
 ```js
 class MyService extends Service {
     public async handle(@inject(MyApi) myApi: MyApi) {
@@ -129,9 +129,9 @@ class Home extends FunctionalService {
 }
 ```
 ## FunctionalService
-[FunctionalServices]() are special classes those have a `handle` method what is contains the business logic.
+[[FunctionalServices|classes#functionalservice]] are special classes those have a `handle` method what is contains the business logic.
 ### Inject usage in FunctionalServices
-Only `handle` function can handle parameter decorators like ([param](), [inject](), etc..). Parameter value will be an initialized instance of an injected type.
+Only `handle` function can handle parameter decorators like ([[param|decorators#param]], [[inject|decorators#inject]], etc..). Parameter value will be an initialized instance of an injected type.
 ```js
 class Home extends FunctionalService {
     public async handle(@inject(MyApi) myApi: MyApi) {
@@ -145,7 +145,7 @@ Injected value will be an instance of the injected type. That contains a `handle
 In different environment it has different implementations.
 * in **AWS** it is a lambda call to the injected lambda function
 * in **local** it is a new request to the injected service 
-> Note: in **local** environment it is works only if it has a [rest]() endpoint
+> Note: in **local** environment it is works only if it has a [[rest|decorators#rest]] endpoint
 ```js
 @injectable()
 class Validate extends FunctionalService {
@@ -163,7 +163,7 @@ class Home extends FunctionalService {
 }
 ```
 ## Hook
-Functionly supports [PreHooks]() and [PostHooks]() these also can be injectable and can inject other types.
+Functionly supports [[PreHooks|classes#prehook]] and [[PostHooks|classes#posthook]] these also can be injectable and can inject other types.
 ### Inject usage in FunctionalServices
 Both type of Hooks have `handle` method and can inject classes.
 ```js
@@ -174,7 +174,7 @@ class Auth extends PreHook {
     }
 }
 ```
-[PostHooks]() has a `catch` method what also can use inject parameter decorators.
+[[PostHooks|classes#posthook]] has a `catch` method what also can use inject parameter decorators.
 ```js
 class MyPostHook extends PostHook {
     public async catch(@inject(MyApi) myApi: MyApi) {
