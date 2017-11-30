@@ -1,5 +1,5 @@
 # Classes
-Available classes in functionly
+Available classes in Functionly
 
 ## Functionly core classes
 - [Resource](#resource)
@@ -10,7 +10,7 @@ Available classes in functionly
 - [PreHook](#prehook)
 - [PostHook](#posthook)
 
-## AWS related classes
+## AWS-related classes
 - [DocumentClientApi](#documentclientapi)
 - [DynamoTable](#dynamotable)
 - [S3Api](#s3api)
@@ -21,10 +21,10 @@ Available classes in functionly
 
 
 # Resource
-This is a base class of every resource what functionly can use. Its handle the environment variables propagation to the [FunctionalServices](#functionalservice)
-
+This is the base class for every resource that Functionly can use. It manages the environment variables propagation to the [FunctionalServices](#functionalservice)
+ 
 ## FunctionalService
-FunctionalServices are the entrypoints of the applications. These can subscribe to the event sources when annotated with [[rest|decorators#rest]] or [[eventSource|decorators#eventsource]] decorators. The services have to implement a public `handle` method what contains a business logic. These can inject other resources ([Api](#api), [Service](#service) or an other [FunctionalService](#functionalservice)) or collect parameters ([[param|decorators#param]], [[stage|decorators#stage]], etc...)
+FunctionalServices are the entrypoints of the applications. These can subscribe to the event sources when annotated with [[rest|decorators#rest]] or [[eventSource|decorators#eventsource]] decorators. The services have to implement a public `handle` method which contains a business logic. These can inject other resources ([Api](#api), [Service](#service) or an other [FunctionalService](#functionalservice)) or collect parameters ([[param|decorators#param]], [[stage|decorators#stage]], etc...)
 ```js
 @rest({ path: '/helloworld' })
 class Home extends FunctionalService {
@@ -33,10 +33,10 @@ class Home extends FunctionalService {
     }
 }
 ```
-> You have to export the `Home.createInvoker()` result from the `main.js` to publish the [FunctionalService](#functionalservice)
+> You have to export the `Home.createInvoker()` results from the `main.js` to publish the [FunctionalService](#functionalservice)
 
 ### Inject another FunctionalService
-You can inject a FunctionalService from another. In AWS its a cross lambda call, in local its a request to the other FunctionalService.
+You can inject a FunctionalService from another FunctionalService. In AWS it's a cross-Lambda call, in a local environment it is a request to the other FunctionalService.
 ```js
 @rest({ path: '/helloworld' })
 class About extends FunctionalService {
@@ -46,10 +46,10 @@ class About extends FunctionalService {
     }
 }
 ```
-!!! known issue: For the local environment: you have to decorate the injected [FunctionalService](#functionalservice) with the [[rest|decorators#rest]] decorator because its called over the first exposed endpoint.
+!!! known issue: For the local environment: you have to decorate the injected [FunctionalService](#functionalservice) with the [[rest|decorators#rest]] decorator because it is called over the first exposed endpoint.
 
 ## Service
-The Services helps to organize the code what you want reuse with [[inject|decorators#inject]]. Services are stateless but if you need states then use [Api](#api). The services have to implement a public `handle` method. These services can only resolve an invoke parameters with [[param|decorators#param]] decorator so they can't read for example from request body.
+Services help to organize code you want reuse with [[inject|decorators#inject]]. Services are stateless but if you need states then use [Api](#api). Services have to implement a public `handle` method. These services can only resolve invoke parameters with [[param|decorators#param]] decorator so they can't read for example from the request body.
 
 ### Definition
 ```js
@@ -71,8 +71,8 @@ class Home extends FunctionalService {
 ```
 
 ## Api
-The Apis helps to organize the code what you want reuse with [[inject|decorators#inject]]. Apis can store states but they can **disapear** any time because of serverless technology. In these classes you can inject other resources in the `constructor`. These has `init` function what is an async method and invoked and waited before the api is injected.
-Any other function on these classes are simple javascript functions.
+APIs help to organize code you want reuse with [[inject|decorators#inject]]. Apis can store states but they can **disappear** any time because of the nature of serverless technology. In these classes you can inject other resources into the `constructor`. These have `init` functions which is an async method and can be invoked or waited for before the API is injected.
+All other functions on these classes are simple JavaScript functions.
 
 ### Definition
 ```js
@@ -109,10 +109,10 @@ class Home extends FunctionalService {
 
 
 ## Hook
-Hook is a base class of hooks. If use it as base class then it is works like [PreHook](#prehook).
+Hook is a base class of hooks. If used as a base class, it works like [PreHook](#prehook).
 
 ## PreHook
-Hooks are middlewares in functionly you can chain them with the [[use|decorators#use]] decodator on [FunctionalServices](#functionalservice) or an other [Hook](#hook). PreHooks are running `before` the decorated class. With the `@use(ResolveUser)` decoration means the `ResolveUser` hook bound to the `Home` FunctionalService. And the `@inject(ResolveUser) user` parameter in the `Home`'s handle method can recive the result.
+Hooks are middleware in Functionly, and you can chain them with the [[use|decorators#use]] decodator on [FunctionalServices](#functionalservice) or another [Hook](#hook). PreHooks are running `before` the decorated class. With the `@use(ResolveUser)` decoration the `ResolveUser` hook can be bound to the `Home` FunctionalService, and so the `@inject(ResolveUser) user` parameter of the `Home`'s handle method can receive the result.
 ```js
 @injectable()
 class ResolveUser extends PreHook {
@@ -132,7 +132,7 @@ class Home extends FunctionalService {
 
 
 ## PostHook
-Hooks are middlewares in functionly you can chain them with the [[use|decorators#use]] decodator on [FunctionalServices](#functionalservice) or an other [Hook](#hook). PostHooks are running `after` the decorated class. With the `@use(TransformResult)` decoration means the `TransformResult` hook bound to the `Home` FunctionalService.
+Hooks are middleware in Functionly, and you can chain them with the [[use|decorators#use]] decodator on [FunctionalServices](#functionalservice) or another [Hook](#hook). PostHooks are running `after` the decorated class. With the `@use(TransformResult)` decoration the `TransformResult` hook can be bound to the `Home` FunctionalService.
 ```js
 class TransformResult extends PostHook {
     public async handle(@result result) {
@@ -168,11 +168,11 @@ And when error occured:
 
 ## DocumentClientApi
 DocumentClientApi creates the `AWS.DynamoDB.DocumentClient` connection to the [DynamoTable](#dynamotable).
-> In local environment its connect to `http://localhost:8000`. What you can change when you set the `DYNAMODB_LOCAL_ENDPOINT` environment variable. Also you can set the region with the `AWS_REGION`
+> In a local environment it connects to `http://localhost:8000`. What you can change when you set the `DYNAMODB_LOCAL_ENDPOINT` environment variable. Also you can set the region with the `AWS_REGION`
 
 
 ## DynamoTable
-When you define a `DynamoTable` and its related to any published [FunctionalService](#functionalservice) the deployment will create a DynamoDB table for the application. And you can [[inject|decorators#inject]] the `Users` table to use it like an [Api](#api). There are functions on it to work with records.
+When you define a `DynamoTable` and it is related to any published [FunctionalService](#functionalservice) the deployment will create a DynamoDB table for the application. And you can [[inject|decorators#inject]] the `Users` table to use it like an [Api](#api). There are functions on it to work with records.
 ```js
 @dynamoTable({ tableName: '%ClassName%-table'})
 class Users extends DynamoTable {}
@@ -181,11 +181,11 @@ class Users extends DynamoTable {}
 
 ## S3Api
 S3Api creates the `AWS.S3` connection to [S3Storage](#s3storage).
-> In local environment its connect to `http://localhost:4572`. What you can change when you set the `S3_LOCAL_ENDPOINT` environment variable. Also you can set the region with the `AWS_REGION`
+> In a local environment it connects to `http://localhost:4572`, which you can change when you set the `S3_LOCAL_ENDPOINT` environment variable. Also you can set the region with the `AWS_REGION`
 
 
 ## S3Storage
-When you define a `S3Storage` and its related to any published [FunctionalService](#functionalservice) the deployment will create a S3 Bucket for the application. And you can [[inject|decorators#inject]] the `Files` storage to use it like an [Api](#api). There are functions on it to work with files.
+When you define a `S3Storage` and it is related to any published [FunctionalService](#functionalservice) the deployment will create an S3 Bucket for the application. Then you can [[inject|decorators#inject]] the `Files` storage to use it like an [Api](#api). There are functions on it to work with files.
 ```js
 @s3Storage({ bucketName: '%ClassName%-store'})
 class Files extends S3Storage {}
@@ -194,17 +194,17 @@ class Files extends S3Storage {}
 
 ## SNSApi
 S3Api creates the `AWS.SNS` connection to [SimpleNotificationService](#simplenotificationservice).
-> In local environment its connect to `http://localhost:4100`. What you can change when you set the `SNS_LOCAL_ENDPOINT` environment variable. Also you can set the region with the `AWS_REGION`
+> In a local environment it connects to `http://localhost:4100`, which you can change when you set the `SNS_LOCAL_ENDPOINT` environment variable. Also you can set the region with the `AWS_REGION`
 
 
 ## SimpleNotificationService
-When you define a `SimpleNotificationService` and its related to any published [FunctionalService](#functionalservice) the deployment will create a Simple Notification Service topic for the application. And you can [[inject|decorators#inject]] the `Notifications` storage to use it like an [Api](#api). There is function on it to publish message.
+When you define a `SimpleNotificationService` and it's connected to any published [FunctionalService](#functionalservice), the deployment will create a Simple Notification Service topic for the application. And you can [[inject|decorators#inject]] the `Notifications` storage to use it like an [Api](#api). There is a function on it to publish messages.
 ```js
 @sns({ topicName: '%ClassName%-topic'})
 class Notifications extends SimpleNotificationService {}
 ```
-> On every deploy there is a new topic created because of the cloudformation can't update custom named topics. The created topic name will contains an additional random number.
+> During every deployment, a new topic is created because the CloudFormation can't update customly named topics. The created topic name will contain an additional random number.
 
 
 ## ApiGateway
-It is just a technical class for [[eventSource|decorators#eventsource]] decorator. This allows you to subscribe to ApiGateway events like a DynamoTable record or S3 file changes. Its not work in local environment as like [[apiGateway|decorators#apigateway]].
+It is just a technical class for the [[eventSource|decorators#eventsource]] decorator. This allows you to subscribe to ApiGateway events like a DynamoTable record or S3 file changes. It does not work in a local environment like [[apiGateway|decorators#apigateway]].

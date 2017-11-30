@@ -1,5 +1,5 @@
 # Dependency Injection (DI)
-This section will introduce how the Dependency Injection works and how can you use it in [Functionly](https://www.npmjs.com/package/functionly)
+This section will introduce how Dependency Injection works and how can you use it in [Functionly](https://www.npmjs.com/package/functionly)
 
 * [Decorators](#decorators)
 * [Lifetime Management](#lifetime-management)
@@ -14,7 +14,7 @@ This section will introduce how the Dependency Injection works and how can you u
 
 ## Decorators
 ### Injectable
-The [injectable]() decorator is used to mark class what we want [inject](#inject) into [Api](#api), [Service](#service), [FunctionalService](#functionalservice)
+The [injectable]() decorator is used to mark classes what we want to [inject](#inject) into [Api](#api), [Service](#service), [FunctionalService](#functionalservice)
 
 What can be injectable:
 * [Api](#api)
@@ -24,16 +24,16 @@ What can be injectable:
 * any [class](#custom-class)
  
 ### Inject
-The [[inject|decorators#inject]] parameter decorator is for inject classes what is marked with [injectable](#injectable)
+The [[inject|decorators#inject]] parameter decorator is used to inject classes which are marked with [injectable](#injectable)
 
-Where can i use inject
+Where can inject be used:
 * [Api](#api)
 * [Service](#service)
 * [FunctionalService](#functionalservice)
 * [Hook](#hook)
 
 ## Lifetime Management
-Injection scopes for specify the lifetime of the injected instances. When the [injectable](#injectable) decorator is used there is a posibility to set the injection scope.
+Injection scopes are used to specify the lifetime of the injected instances. When the [injectable](#injectable) decorator is used there is a posibility to set the injection scope.
 > Default injection scope is `InjectionScope.Transient`
 ```ts
 enum InjectionScope {
@@ -43,7 +43,7 @@ enum InjectionScope {
 ```
 
 ### Transient
-Every time a new instance of the injected type will be created when the service is requested from the container.
+When a service is requested from the container, a new instance of the injected type is created.
 ```js
 @injectable()
 ```
@@ -53,17 +53,17 @@ or
 ```
 
 ### Singleton
-Only one instance of the injected type will be create at first time of injection and will use all time when it is requested from the container
+Only one instance of the injected type will be created for the first time of an injection, and will use this all the time when it is requested from the container.
 ```js
 @injectable(InjectionScope.Singleton)
 ```
 # Usage in functionly
 ## Service resources
-> Service resources (like [[DynamoTable|classes#dynamotable]], [[S3Storage|classes#s3storage]], etc...) are just an [Apis](#api)
+> Service resources (like [[DynamoTable|classes#dynamotable]], [[S3Storage|classes#s3storage]], etc...) are simple [Apis](#api)
 ## Api
-[[Apis|classes#api]] are the collection of functions what are contains business logic of the application.
+[[Apis|classes#api]] are the collection of functions which contain the business logic of the application.
 ### Inject usage in Api
-Only the `constructor` function can handle functionly parameter decorators ([[inject|decorators#inject]], etc..). Parameter value will be an initialized instance of an injected type.
+Only the `constructor` function can handle Functionly parameter decorators ([[inject|decorators#inject]], etc..). Parameter value will be an initialized instance of an injected type.
 ```js
 @injectable()
 class MyApi extends Api {
@@ -85,10 +85,10 @@ class MyApi extends Api {
 }
 ```
 ### Use injected Api
-Lifecycle of the `MyApi` in functionly when it is injected.
-1. [IoC](#ioc) resolve an instane of the Api -> `constructor` called
-2. `init` method of the instance run if the instance created. It is an async function
-3. Injection occurs -> run the code what is injected the Api
+Lifecycle of the `MyApi` in Functionly when it is injected.
+1. [IoC](#ioc) resolves an instane of the Api -> `constructor` called
+2. `init` method of the instance runs if the instance is created. It is an async function.
+3. Injection occurs -> run the code that has injected the Api
 ```js
 class MyService extends Service {
     public async handle(@inject(MyApi) myApi: MyApi) {
@@ -99,9 +99,9 @@ class MyService extends Service {
 ```
 
 ## Service
-[[Services|classes#service]] are special classes those have a `handle` method what is contains the business logic.
+[[Services|classes#service]] are special classes which have a `handle` method that contains the business logic.
 ### Inject usage in Services
-Only `handle` function can handle parameter decorators like ([[param|decorators#param]], [[inject|decorators#inject]], etc..). Parameter value will be an initialized instance of an injected type.
+Only `handle` functions can handle parameter decorators like ([[param|decorators#param]], [[inject|decorators#inject]], etc..). Parameter value will be an initialized instance of an injected type.
 ```js
 class MyService extends Service {
     public async handle(@inject(MyApi) myApi: MyApi) {
@@ -111,7 +111,7 @@ class MyService extends Service {
 }
 ```
 ### Use injected Services
-Injected value will be an async function what is call the service invoke method. That function has a differenst signature then the `handle` method, it recives az object where object keys are the parameter's names
+Injected value will be an async function which calls the service invoke method. This function has a different signature than the `handle` method, it receives an object in which object keys are the parameters' names
 ```js
 @injectable()
 class MyService extends Service {
@@ -129,9 +129,9 @@ class Home extends FunctionalService {
 }
 ```
 ## FunctionalService
-[[FunctionalServices|classes#functionalservice]] are special classes those have a `handle` method what is contains the business logic.
+[[FunctionalServices|classes#functionalservice]] are special classes which have a `handle` method that contains the business logic.
 ### Inject usage in FunctionalServices
-Only `handle` function can handle parameter decorators like ([[param|decorators#param]], [[inject|decorators#inject]], etc..). Parameter value will be an initialized instance of an injected type.
+Only `handle` functions can handle parameter decorators like ([[param|decorators#param]], [[inject|decorators#inject]], etc..). Parameter value will be an initialized instance of an injected type.
 ```js
 class Home extends FunctionalService {
     public async handle(@inject(MyApi) myApi: MyApi) {
@@ -141,11 +141,11 @@ class Home extends FunctionalService {
 }
 ```
 ### Use injected FunctionalServices
-Injected value will be an instance of the injected type. That contains a `handle` method, it recives az object where object keys are the parameter's names.
-In different environment it has different implementations.
-* in **AWS** it is a lambda call to the injected lambda function
+Injected value will be an instance of the injected type. That contains a `handle` method, it receives an object in which object keys are the parameters' names.
+In different environments it has different implementations.
+* in **AWS** it is a Lambda call to the injected Lambda function
 * in **local** it is a new request to the injected service 
-> Note: in **local** environment it is works only if it has a [[rest|decorators#rest]] endpoint
+> Note: in **local** environment it works only if it has a [[rest|decorators#rest]] endpoint
 ```js
 @injectable()
 class Validate extends FunctionalService {
@@ -163,7 +163,7 @@ class Home extends FunctionalService {
 }
 ```
 ## Hook
-Functionly supports [[PreHooks|classes#prehook]] and [[PostHooks|classes#posthook]] these also can be injectable and can inject other types.
+Functionly supports [[PreHooks|classes#prehook]] and [[PostHooks|classes#posthook]]. These also can be injectable and can inject other types.
 ### Inject usage in FunctionalServices
 Both type of Hooks have `handle` method and can inject classes.
 ```js
@@ -174,7 +174,7 @@ class Auth extends PreHook {
     }
 }
 ```
-[[PostHooks|classes#posthook]] has a `catch` method what also can use inject parameter decorators.
+[[PostHooks|classes#posthook]] has a `catch` method which also can use inject parameter decorators.
 ```js
 class MyPostHook extends PostHook {
     public async catch(@inject(MyApi) myApi: MyApi) {
@@ -185,7 +185,7 @@ class MyPostHook extends PostHook {
 ```
 
 ### Use injected custom class
-PreHook injection has a special resolution, it is not returns the instance of the injected type but it is the last result of the type.
+PreHook injection has a special resolution, it does not return the instance of the injected type but it is the last result of the type.
 ```js
 @injectable()
 class HelloWorld extends PreHook {
@@ -204,12 +204,12 @@ class Home extends FunctionalService {
 ```
 
 ## Custom class
-Any javascript class. [IoC](#ioc) creates an instance of the injected type. 
+Can be any JavaScript class. [IoC](#ioc) creates an instance of the injected type. 
 > Parameter decorators are not supported here.
 ### Use injected custom class
-Lifecycle of the class in functionly when it is injected.
+Lifecycle of the class in Functionly when it is injected.
 1. [IoC](#ioc) resolve an instance -> `constructor` invocation
-3. Injection occurs -> run the code what is injected the Api
+3. Injection occurs -> run the code which has injected the Api
 ```js
 class MyClass {
     public hello(name) {
@@ -225,7 +225,7 @@ class MyService extends Service {
 ```
 
 # IoC
-There is an IoC container in function which helps to create new instances from types.
+There is an IoC container in Functionly which helps to create new instances from types.
 ```js
 import { container } from 'functionly'
 ```
@@ -240,14 +240,14 @@ import { container } from 'functionly'
 2. containsInstance
     > signature: Class => boolean
 
-    Returns `true` if the container has a cached instance of the class what the resolve will return. Otherwise return `false`. If the injection scope of the parameter class is [Transient](#transient) then it is returns `false` every time. But when [Singleton](#singleton) it can returns `true` when the class already resolved at least one time.
+    Returns `true` if the container has a cached instance of the class that the resolve will return. Otherwise returns `false`. If the injection scope of the parameter class is [Transient](#transient) then it returns `false` every time. But when it is [Singleton](#singleton) it can return `true` when the class is already resolved at least once.
     ```js
     const hasUser = container.containsInstance(User)
     ```
 3. registerInstance
     > signature: (Class, instance) => void
 
-    Register the instance for the class and the `resolve` will return it depends on the injection scope.
+    Registers the instance of the class and the `resolve` will return it depending on the injection scope.
     ```js
     const user = new User()
     container.registerInstance(User, user)
@@ -255,7 +255,7 @@ import { container } from 'functionly'
 4. registerType
     > signature: (from: Class, to: Class) => void
 
-    Remap the class type in the container and then the `resolve` will return the instance of the new Class when the `resolve` calls with the original Class
+    Remaps the class type in the container and then the `resolve` will return the instance of the new Class when the `resolve` is called with the original Class
     ```js
     container.registerType(User, WebUser)
     const user = container.resolve(User)
@@ -264,7 +264,7 @@ import { container } from 'functionly'
 5. resolveType
     > signature: (Class) => Class
 
-    Returns the registered type for the given class. If it is not remapped them return it.
+    Returns the registered type of the given class, or the mapped type if it the class has been re-mapped.  
     ```js
     container.resolveType(User) // => User
 
