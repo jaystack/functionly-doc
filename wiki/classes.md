@@ -22,7 +22,7 @@ Available classes in Functionly
 
 # Resource
 This is the base class for every resource that Functionly can use. It manages the environment variables propagation to the [FunctionalServices](#functionalservice)
-
+ 
 ## FunctionalService
 FunctionalServices are the entrypoints of the applications. These can subscribe to the event sources when annotated with [[rest|decorators#rest]] or [[eventSource|decorators#eventsource]] decorators. The services have to implement a public `handle` method which contains a business logic. These can inject other resources ([Api](#api), [Service](#service) or an other [FunctionalService](#functionalservice)) or collect parameters ([[param|decorators#param]], [[stage|decorators#stage]], etc...)
 ```js
@@ -168,11 +168,11 @@ And when error occured:
 
 ## DocumentClientApi
 DocumentClientApi creates the `AWS.DynamoDB.DocumentClient` connection to the [DynamoTable](#dynamotable).
-> In local environment it connects to `http://localhost:8000`. What you can change when you set the `DYNAMODB_LOCAL_ENDPOINT` environment variable. Also you can set the region with the `AWS_REGION`
+> In a local environment it connects to `http://localhost:8000`. What you can change when you set the `DYNAMODB_LOCAL_ENDPOINT` environment variable. Also you can set the region with the `AWS_REGION`
 
 
 ## DynamoTable
-When you define a `DynamoTable` and it's related to any published [FunctionalService](#functionalservice) the deployment will create a DynamoDB table for the application. And you can [[inject|decorators#inject]] the `Users` table to use it like an [Api](#api). There are functions on it to work with records.
+When you define a `DynamoTable` and it is related to any published [FunctionalService](#functionalservice) the deployment will create a DynamoDB table for the application. And you can [[inject|decorators#inject]] the `Users` table to use it like an [Api](#api). There are functions on it to work with records.
 ```js
 @dynamoTable({ tableName: '%ClassName%-table'})
 class Users extends DynamoTable {}
@@ -181,11 +181,11 @@ class Users extends DynamoTable {}
 
 ## S3Api
 S3Api creates the `AWS.S3` connection to [S3Storage](#s3storage).
-> In local environment its connect to `http://localhost:4572`. What you can change when you set the `S3_LOCAL_ENDPOINT` environment variable. Also you can set the region with the `AWS_REGION`
+> In a local environment it connects to `http://localhost:4572`, which you can change when you set the `S3_LOCAL_ENDPOINT` environment variable. Also you can set the region with the `AWS_REGION`
 
 
 ## S3Storage
-When you define a `S3Storage` and its related to any published [FunctionalService](#functionalservice) the deployment will create a S3 Bucket for the application. And you can [[inject|decorators#inject]] the `Files` storage to use it like an [Api](#api). There are functions on it to work with files.
+When you define a `S3Storage` and it is related to any published [FunctionalService](#functionalservice) the deployment will create an S3 Bucket for the application. Then you can [[inject|decorators#inject]] the `Files` storage to use it like an [Api](#api). There are functions on it to work with files.
 ```js
 @s3Storage({ bucketName: '%ClassName%-store'})
 class Files extends S3Storage {}
@@ -194,17 +194,17 @@ class Files extends S3Storage {}
 
 ## SNSApi
 S3Api creates the `AWS.SNS` connection to [SimpleNotificationService](#simplenotificationservice).
-> In local environment its connect to `http://localhost:4100`. What you can change when you set the `SNS_LOCAL_ENDPOINT` environment variable. Also you can set the region with the `AWS_REGION`
+> In a local environment it connects to `http://localhost:4100`, which you can change when you set the `SNS_LOCAL_ENDPOINT` environment variable. Also you can set the region with the `AWS_REGION`
 
 
 ## SimpleNotificationService
-When you define a `SimpleNotificationService` and its related to any published [FunctionalService](#functionalservice) the deployment will create a Simple Notification Service topic for the application. And you can [[inject|decorators#inject]] the `Notifications` storage to use it like an [Api](#api). There is function on it to publish message.
+When you define a `SimpleNotificationService` and it's connected to any published [FunctionalService](#functionalservice), the deployment will create a Simple Notification Service topic for the application. And you can [[inject|decorators#inject]] the `Notifications` storage to use it like an [Api](#api). There is a function on it to publish messages.
 ```js
 @sns({ topicName: '%ClassName%-topic'})
 class Notifications extends SimpleNotificationService {}
 ```
-> On every deploy there is a new topic created because of the cloudformation can't update custom named topics. The created topic name will contains an additional random number.
+> During every deployment, a new topic is created because the CloudFormation can't update customly named topics. The created topic name will contain an additional random number.
 
 
 ## ApiGateway
-It is just a technical class for [[eventSource|decorators#eventsource]] decorator. This allows you to subscribe to ApiGateway events like a DynamoTable record or S3 file changes. Its not work in local environment as like [[apiGateway|decorators#apigateway]].
+It is just a technical class for the [[eventSource|decorators#eventsource]] decorator. This allows you to subscribe to ApiGateway events like a DynamoTable record or S3 file changes. It does not work in a local environment like [[apiGateway|decorators#apigateway]].
