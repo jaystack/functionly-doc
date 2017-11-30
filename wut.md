@@ -56,12 +56,12 @@ Our aim is to give a **solution for the three principles of functionly**.
 
 ## [Functionly](https://www.npmjs.com/package/functionly)
 
-The purpose is describing the **pure business logic as a Service** without handling the protocol or any outher technical overhead.
+The purpose is describing the **pure business logic as a Service** without handling the protocol or any other technical overhead. Using this you can define any infrastrucural setup with decorators.
 
 ```js
 @post('/login')
 class Login extends Service {
-  async handle(@param username, @param password, @inject(UserTable) users) {
+  static async handle(@param username, @param password, @inject(UserTable) users) {
     const user = await users.find({ username, password: md5(password) })
     if (!user) throw new Exception('Invalid username or password')
     return user
@@ -80,3 +80,44 @@ or run locally
 ```
 functionly local
 ```
+
+## Concept
+
+What happens exactly? Look at the snippet above. We made a *Login service*. The first and most important aspect, that with [functionly](https://www.npmjs.com/package/functionly) we do not implement working code, we are just doing **metaprogramming**. Every service is a meta description, from that [functionly](https://www.npmjs.com/package/functionly) is able to build a working code in several environment. For example in an [express](https://www.npmjs.com/package/express) application that will look like to similar this:
+
+```js
+express().post('/login', async ({ query: { username, password } }, res) => {
+  const user = await users.find({ username, password: md5(password) })
+  if (!user) throw new Exception('Invalid username or password')
+  res.json(user)
+})
+```
+
+In [AWS](https://aws.amazon.com/) environment the `handle` method will be a [lambda function](http://docs.aws.amazon.com/lambda/latest/dg/lambda-introduction-function.html), with `POST /login` routing.
+
+This way, `Login class` never will be an instance. The `static handle` method is the only implementation in our code, which is going to be used in the implementation in [functionly](https://www.npmjs.com/package/functionly).
+
+The `class` is only necessary for describing meta informations with decorators. **We decorate our service with infrastructural informations.** This way a service will never be just a function. This is rather one a `json` object, with a pure logic implementation as a function, something like this:
+
+```js
+{
+  type: 'DYNAMO_TABLE',
+  name: 'UserTable',
+  tableDefinition: {
+    columns: [ 'username', 'password' ]
+  }
+}
+
+{
+  type: 'REST_SERVICE',
+  name: 'Login',
+  dependencies: ['UserTable'],
+  restDefinition: {
+    method: 'POST',
+    route: '/login',
+    implementation: dependencies => params => { ... }
+  }
+}
+```
+
+This description form is more able to be a portable service.
