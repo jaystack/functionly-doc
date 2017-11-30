@@ -22,14 +22,16 @@ Lets suppose we are developing a microservice. We all have know that a microserv
 
 Despite the microservice's logic is defined definitely, you have to implement a lot of things above this logic for each service:
 
-- http request handling
+- HTTP request handling
 - message handling
-- locate other services
+- endpoint discovery: locate other services
 - connection handling for databases
 - logging and tracing
 - graceful startup handling
 - graceful termination handling
 - etc
+
+<img alt="nanoservice draft" src="img/nanoservice.png" height="300px"/>
 
 Actually the bigest part of the service is not already your logic. Including them microservices cannot be *micro* anymore.
 
@@ -110,7 +112,7 @@ The `class` is only necessary for describing meta informations with decorators. 
 
 {
   type: 'REST_SERVICE',
-  name: 'Login',
+  name: 'LoginService',
   dependencies: ['UserTable'],
   restDefinition: {
     method: 'POST',
