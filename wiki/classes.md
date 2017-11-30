@@ -1,5 +1,5 @@
 # Classes
-Available classes in functionly
+Available classes in Functionly
 
 ## Functionly core classes
 - [Resource](#resource)
@@ -10,7 +10,7 @@ Available classes in functionly
 - [PreHook](#prehook)
 - [PostHook](#posthook)
 
-## AWS related classes
+## AWS-related classes
 - [DocumentClientApi](#documentclientapi)
 - [DynamoTable](#dynamotable)
 - [S3Api](#s3api)
@@ -21,10 +21,10 @@ Available classes in functionly
 
 
 # Resource
-This is a base class of every resource what functionly can use. Its handle the environment variables propagation to the [FunctionalServices](#functionalservice)
+This is the base class for every resource that Functionly can use. It manages the environment variables propagation to the [FunctionalServices](#functionalservice)
 
 ## FunctionalService
-FunctionalServices are the entrypoints of the applications. These can subscribe to the event sources when annotated with [[rest|decorators#rest]] or [[eventSource|decorators#eventsource]] decorators. The services have to implement a public `handle` method what contains a business logic. These can inject other resources ([Api](#api), [Service](#service) or an other [FunctionalService](#functionalservice)) or collect parameters ([[param|decorators#param]], [[stage|decorators#stage]], etc...)
+FunctionalServices are the entrypoints of the applications. These can subscribe to the event sources when annotated with [[rest|decorators#rest]] or [[eventSource|decorators#eventsource]] decorators. The services have to implement a public `handle` method which contains a business logic. These can inject other resources ([Api](#api), [Service](#service) or an other [FunctionalService](#functionalservice)) or collect parameters ([[param|decorators#param]], [[stage|decorators#stage]], etc...)
 ```js
 @rest({ path: '/helloworld' })
 class Home extends FunctionalService {
@@ -33,10 +33,10 @@ class Home extends FunctionalService {
     }
 }
 ```
-> You have to export the `Home.createInvoker()` result from the `main.js` to publish the [FunctionalService](#functionalservice)
+> You have to export the `Home.createInvoker()` results from the `main.js` to publish the [FunctionalService](#functionalservice)
 
 ### Inject another FunctionalService
-You can inject a FunctionalService from another. In AWS its a cross lambda call, in local its a request to the other FunctionalService.
+You can inject a FunctionalService from another FunctionalService. In AWS it's a cross-Lambda call, in a local environment it is a request to the other FunctionalService.
 ```js
 @rest({ path: '/helloworld' })
 class About extends FunctionalService {
@@ -46,10 +46,10 @@ class About extends FunctionalService {
     }
 }
 ```
-!!! known issue: For the local environment: you have to decorate the injected [FunctionalService](#functionalservice) with the [[rest|decorators#rest]] decorator because its called over the first exposed endpoint.
+!!! known issue: For the local environment: you have to decorate the injected [FunctionalService](#functionalservice) with the [[rest|decorators#rest]] decorator because it is called over the first exposed endpoint.
 
 ## Service
-The Services helps to organize the code what you want reuse with [[inject|decorators#inject]]. Services are stateless but if you need states then use [Api](#api). The services have to implement a public `handle` method. These services can only resolve an invoke parameters with [[param|decorators#param]] decorator so they can't read for example from request body.
+Services help to organize code you want reuse with [[inject|decorators#inject]]. Services are stateless but if you need states then use [Api](#api). Services have to implement a public `handle` method. These services can only resolve invoke parameters with [[param|decorators#param]] decorator so they can't read for example from the request body.
 
 ### Definition
 ```js
@@ -71,8 +71,8 @@ class Home extends FunctionalService {
 ```
 
 ## Api
-The Apis helps to organize the code what you want reuse with [[inject|decorators#inject]]. Apis can store states but they can **disapear** any time because of serverless technology. In these classes you can inject other resources in the `constructor`. These has `init` function what is an async method and invoked and waited before the api is injected.
-Any other function on these classes are simple javascript functions.
+APIs help to organize code you want reuse with [[inject|decorators#inject]]. Apis can store states but they can **disappear** any time because of the nature of serverless technology. In these classes you can inject other resources into the `constructor`. These have `init` functions which is an async method and can be invoked or waited for before the API is injected.
+All other functions on these classes are simple JavaScript functions.
 
 ### Definition
 ```js
@@ -109,10 +109,10 @@ class Home extends FunctionalService {
 
 
 ## Hook
-Hook is a base class of hooks. If use it as base class then it is works like [PreHook](#prehook).
+Hook is a base class of hooks. If used as a base class, it works like [PreHook](#prehook).
 
 ## PreHook
-Hooks are middlewares in functionly you can chain them with the [[use|decorators#use]] decodator on [FunctionalServices](#functionalservice) or an other [Hook](#hook). PreHooks are running `before` the decorated class. With the `@use(ResolveUser)` decoration means the `ResolveUser` hook bound to the `Home` FunctionalService. And the `@inject(ResolveUser) user` parameter in the `Home`'s handle method can recive the result.
+Hooks are middleware in Functionly, and you can chain them with the [[use|decorators#use]] decodator on [FunctionalServices](#functionalservice) or another [Hook](#hook). PreHooks are running `before` the decorated class. With the `@use(ResolveUser)` decoration the `ResolveUser` hook can be bound to the `Home` FunctionalService, and so the `@inject(ResolveUser) user` parameter of the `Home`'s handle method can receive the result.
 ```js
 @injectable()
 class ResolveUser extends PreHook {
@@ -132,7 +132,7 @@ class Home extends FunctionalService {
 
 
 ## PostHook
-Hooks are middlewares in functionly you can chain them with the [[use|decorators#use]] decodator on [FunctionalServices](#functionalservice) or an other [Hook](#hook). PostHooks are running `after` the decorated class. With the `@use(TransformResult)` decoration means the `TransformResult` hook bound to the `Home` FunctionalService.
+Hooks are middleware in Functionly, and you can chain them with the [[use|decorators#use]] decodator on [FunctionalServices](#functionalservice) or another [Hook](#hook). PostHooks are running `after` the decorated class. With the `@use(TransformResult)` decoration the `TransformResult` hook can be bound to the `Home` FunctionalService.
 ```js
 class TransformResult extends PostHook {
     public async handle(@result result) {
@@ -168,11 +168,11 @@ And when error occured:
 
 ## DocumentClientApi
 DocumentClientApi creates the `AWS.DynamoDB.DocumentClient` connection to the [DynamoTable](#dynamotable).
-> In local environment its connect to `http://localhost:8000`. What you can change when you set the `DYNAMODB_LOCAL_ENDPOINT` environment variable. Also you can set the region with the `AWS_REGION`
+> In local environment it connects to `http://localhost:8000`. What you can change when you set the `DYNAMODB_LOCAL_ENDPOINT` environment variable. Also you can set the region with the `AWS_REGION`
 
 
 ## DynamoTable
-When you define a `DynamoTable` and its related to any published [FunctionalService](#functionalservice) the deployment will create a DynamoDB table for the application. And you can [[inject|decorators#inject]] the `Users` table to use it like an [Api](#api). There are functions on it to work with records.
+When you define a `DynamoTable` and it's related to any published [FunctionalService](#functionalservice) the deployment will create a DynamoDB table for the application. And you can [[inject|decorators#inject]] the `Users` table to use it like an [Api](#api). There are functions on it to work with records.
 ```js
 @dynamoTable({ tableName: '%ClassName%-table'})
 class Users extends DynamoTable {}
