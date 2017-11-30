@@ -424,7 +424,7 @@ The `@param name` is a shortcut here for `@param('name') name`.
 
 
 ## serviceParams
-By using this, you can get the original event source. In the **AWS** environment it has properties like `event`, `context` and `cb`. In **local** it has `req`, `res` and `next`.
+By using this, you can get the original parameters of the event source. In the **AWS** environment it has properties like `event`, `context` and `cb`. In **local** it has `req`, `res` and `next`.
 
 ### Example
 ```js
