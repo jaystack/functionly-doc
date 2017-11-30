@@ -52,6 +52,8 @@ Logic abstraction is cool, but you still must ensure the cloud environment with 
 
 This could be an other special profession, you must have these skills for every provider you ever met and work.
 
+Our aim is to give a **solution for the three principles of functionly**.
+
 ## [Functionly](https://www.npmjs.com/package/functionly)
 
 The purpose is describing the **pure business logic as a Service** without handling the protocol or any outher technical overhead.
