@@ -127,3 +127,7 @@ This description form is more able to be a portable service.
 [Functionly](https://www.npmjs.com/package/functionly) resolves the dependencies, ensures the proper roles for these dependencies, ensures the environment and resources, and wraps the implementations with the given environment. That's result is an environment specific code with resource descriptors already. This will deployey to the choosen provider.
 
 ![functionly-flow](img/functionly-flow.png)
+
+**The primary advantage of [functionly](https://www.npmjs.com/package/functionly) is the provider-independent code.** You can deploy your meta-code to many supported provider. And if you miss one of them, you are unrestricted for create the connector as a plugin.
+
+![functionly-flow](img/functionly-providers.png)
