@@ -10,8 +10,8 @@ For example [serverless](https://www.npmjs.com/package/serverless) is a convenie
 
 [Functionly](https://www.npmjs.com/package/functionly) is a more innovative concept and framework. Its principles are:
 
-1) **Logic abstraction**: Hide the process and protocol handling. Describe your services in pure functions, and just work with the efficient business data.
-2) **Provider abstraction**: Hide the infrastructural elements. Provide your side effects via injection mechanism.
+1) **Logic abstraction**: Hide the process and protocol handling. Describe your services in **pure functions**, and just work with the efficient business data.
+2) **Provider abstraction**: Hide the infrastructural elements. Provide your side effects via **injection mechanism**.
 3) **Unlimited control**: Ensure the access to the native and low-level implementations. Even one runtime/deploy lifecycle controlling or even native resource settings. But all of them must be defined strictly separated from your logic implementations.
 
 These principles guarantee the independency and portability of your application.
