@@ -124,7 +124,7 @@ The `class` is only necessary for describing meta informations with decorators. 
 
 This description form is more able to be a portable service.
 
-[Functionly](https://www.npmjs.com/package/functionly) resolves the dependencies, ensures the proper roles for these dependencies, ensures the environment and resources, and wraps the implementations with the given environment. That's result is an environment specific code with resource descriptors already. This will deployey to the choosen provider.
+[Functionly](https://www.npmjs.com/package/functionly) resolves the dependencies, ensures the proper roles for these dependencies, ensures the environment and resources, and wraps the implementations with the given environment. That's result is an environment specific code with resource descriptors already. This will deployed to the choosen provider.
 
 ![functionly-flow](img/functionly-flow.png)
 
