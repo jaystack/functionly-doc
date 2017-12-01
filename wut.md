@@ -113,7 +113,7 @@ The `class` is only necessary for describing meta informations with decorators. 
 {
   type: 'REST_SERVICE',
   name: 'LoginService',
-  dependencies: ['UserTable'],
+  dependencies: [ 'UserTable' ],
   restDefinition: {
     method: 'POST',
     route: '/login',
