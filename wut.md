@@ -92,7 +92,7 @@ functionly local
 What happens exactly? Look at the snippet above. We made a *Login service*. The first and most important aspect, that with [functionly](https://www.npmjs.com/package/functionly) we do not implement working code, we are just doing **metaprogramming**. Every service is a meta description, from that [functionly](https://www.npmjs.com/package/functionly) is able to build a working code in several environment. For example in an [express](https://www.npmjs.com/package/express) application that will look like to similar this:
 
 ```js
-express().post('/login', async ({ query: { username, password } }, res) => {
+express().post('/login', async ({ body: { username, password } }, res) => {
   const user = await users.find({ username, password: md5(password) })
   if (!user) throw new Exception('Invalid username or password')
   res.json(user)
