@@ -1,3 +1,5 @@
+# <img src="img/logo.png" height="40"/> functionly
+
 ## Abstract
 
 Nowadays we have many abilities to **implement our web services within scalable cloud providers**. They provide similar interfaces to describe our business logic in an **abstract way** without scaling efforts. Including the more and more popular serverless technologies, these technologies allow the **fast prototyping**, even though that the service set of any such provider has a steep learning curve for using it professionally and deeply exploited. So we can declare the migration between two provider as the next technical effort.
@@ -82,6 +84,8 @@ or run locally
 ```
 functionly local
 ```
+
+[Functionly](https://www.npmjs.com/package/functionly) brings the functional approach even to nodejs hosted conventional microservices - providing you an easy way to go serverless once you are ready to give up  meddling with nodejs and docker.
 
 ## Concept
 
