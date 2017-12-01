@@ -360,14 +360,14 @@ class Home extends FunctionalService {}
 
 
 ## use
-There is a middleware system in Functionly. You can set [[PreHook|classes#prehook]] and [[PostHook|classes#posthook]] as middleware for the [[FunctionalService|classes#functionalservice]]. You can read more about middlewares [[here|middlewares]], or check out the unit tests [here](https://github.com/jaystack/functionly/blob/master/test/hook.tests.ts#L677)
+There is a middleware system in Functionly. You can set [[PreHook|classes#prehook]] and [[PostHook|classes#posthook]] as middleware for the [[FunctionalService|classes#functionalservice]]. You can read more about middleware [[here|middleware]], or check out the unit tests [here](https://github.com/jaystack/functionly/blob/master/test/hook.tests.ts#L677)
 > usable at [[FunctionalService|classes#functionalservice]]
 
 > usable at [[Hook|classes#hook]]
 
 ### Parameters
 ```js
-@use(...middlewares)
+@use(...middleware)
 ```
 
 ### Example
