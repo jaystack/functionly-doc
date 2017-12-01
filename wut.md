@@ -131,3 +131,11 @@ This description form is more able to be a portable service.
 **The primary advantage of [functionly](https://www.npmjs.com/package/functionly) is the provider-independent code.** You can deploy your meta-code to many supported provider. And if you miss one of them, you are unrestricted for create the connector as a plugin.
 
 ![functionly-flow](img/functionly-providers.png)
+
+## Easy to test
+
+The injection mechanism of [functionly](https://www.npmjs.com/package/functionly) makes easy to mock dependencies for services, because service implementations are pure side-effect-less functions.
+
+The components of your architecture form a dependency network. You can always slice a sub-network and you can test it separately even a single servie or even a service-group.
+
+<img alt="testing" src="img/testing.png" height="400"/>
