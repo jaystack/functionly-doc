@@ -89,7 +89,7 @@ functionly local
 
 ## Concept
 
-What happens exactly? Look at the snippet above. We made a *Login service*. The first and most important aspect, that with [functionly](https://www.npmjs.com/package/functionly) we do not implement working code, we are just doing **metaprogramming**. Every service is a meta description, from that [functionly](https://www.npmjs.com/package/functionly) is able to build a working code in several environment. For example in an [express](https://www.npmjs.com/package/express) application that will look like to similar this:
+What happens exactly? Look at the snippet above. We made a *Login service*. The first and most important aspect, that with [functionly](https://www.npmjs.com/package/functionly) we do not implement working code, we are just doing **metaprogramming**. Every service is a meta description, from that [functionly](https://www.npmjs.com/package/functionly) is able to build a working code in several environments. For example in an [express](https://www.npmjs.com/package/express) application that will look like to similar this:
 
 ```js
 express().post('/login', async ({ body: { username, password } }, res) => {
@@ -101,9 +101,9 @@ express().post('/login', async ({ body: { username, password } }, res) => {
 
 In [AWS](https://aws.amazon.com/) environment the `handle` method will be a [lambda function](http://docs.aws.amazon.com/lambda/latest/dg/lambda-introduction-function.html), with `POST /login` routing.
 
-This way, `Login class` never will be an instance. The `static handle` method is the only implementation in our code, which is going to be used in the implementation in [functionly](https://www.npmjs.com/package/functionly).
+This way, `Login class` never will be an instance. The `static handle` method is the only implementation in our code, which is going to be used in the implementation of [functionly](https://www.npmjs.com/package/functionly).
 
-The `class` is only necessary for describing meta informations with decorators. **We decorate our service with infrastructural informations.** This way a service will never be just a function. This is rather one a `json` object, with a pure logic implementation as a function, something like this:
+The `class` is only necessary for describing meta informations with decorators. **We decorate our services with metadata.** This way a service will never be just a function. This is rather one a `json` object, with a pure logic implementation as a function, something like this:
 
 ```js
 {
@@ -132,7 +132,7 @@ This description form is more able to be a portable service.
 
 ![functionly-flow](img/functionly-flow.png)
 
-**The primary advantage of [functionly](https://www.npmjs.com/package/functionly) is the provider-independent code.** You can deploy your meta-code to many supported provider. And if you miss one of them, you are unrestricted for create the connector as a plugin.
+**The one of primary advantage of [functionly](https://www.npmjs.com/package/functionly) is the provider-independent code.** You can deploy your meta-code to many supported provider. And if you miss one of them, you are unrestricted for create the connector as a plugin.
 
 ![functionly-flow](img/functionly-providers.png)
 
