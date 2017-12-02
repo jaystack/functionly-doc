@@ -67,7 +67,7 @@ The purpose is describing the **pure business logic as a Service** without handl
 class Login extends Service {
   static async handle(@param username, @param password, @inject(UserTable) users) {
     const user = await users.find({ username, password: md5(password) })
-    if (!user) throw new Exception('Invalid username or password')
+    if (!user) throw new Error('Invalid username or password')
     return user
   }
 }
@@ -94,7 +94,7 @@ What happens exactly? Look at the snippet above. We made a *Login service*. The 
 ```js
 express().post('/login', async ({ body: { username, password } }, res) => {
   const user = await users.find({ username, password: md5(password) })
-  if (!user) throw new Exception('Invalid username or password')
+  if (!user) throw new Error('Invalid username or password')
   res.json(user)
 })
 ```
