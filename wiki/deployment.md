@@ -21,7 +21,7 @@ When you use Functionly in your project or after installing it to global, you al
 ```
 
 # Package creation
-??? Environment deployment implemenatation can support the package creation before the deployment to see the deployment resources. ???
+Environment deployment implemenatations can support package creation before the deployment to see the deployment resources.
 ```sh
 functionly package [target]
 ```
