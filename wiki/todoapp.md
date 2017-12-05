@@ -1,5 +1,5 @@
-# Todo app with functionly
-This quick start guide will teach you how to create Todo app with [Functionly](https://www.npmjs.com/package/functionly).
+# Todo app with Functionly
+This quick start guide will teach you how to create a Todo app with [Functionly](https://www.npmjs.com/package/functionly).
 
 In this tutorial you will:
 
@@ -12,7 +12,7 @@ In this tutorial you will:
 * [AWS deployment](#aws-deployment)
 
 ## Create a dynamo table
-We need a DynamoTable because we want to store todo items. It will be the `TodoTable`.
+We need a DynamoTable because we want to store todo items. It will be named as `TodoTable`.
 ```js
 import { DynamoTable, dynamoTable, injectable } from 'functionly'
 
@@ -22,7 +22,7 @@ export class TodoTable extends DynamoTable { }
 ```
 
 ## Create functional services
-Define a base class for FunctionalService to set basic labda settings in AWS environment.
+Define a base class for FunctionalService to set basic Lambda settings in the AWS environment.
 ```js
 import { FunctionalService, aws } from 'functionly'
 
@@ -31,21 +31,21 @@ export class TodoService extends FunctionalService { }
 ```
 
 ### Read todos
-We need to create service to read a todos.
+We need to create a service to read a todo items.
 ```js
 export class GetAllTodos extends TodoService {
     public async handle() {}
 }
 ```
-Decorate it with the [rest]() decorator. We need a `path` and have to set the `cors` and the `anonymous` property to `true` because we want to call it without authentication and from other domain.
+Decorate it with the [rest]() decorator. We need a `path` and have to set the `cors` and the `anonymous` properties to `true` because we want to call it without authentication and from another domain.
 ```js
 @rest({ path: '/getAllTodos', cors: true, anonymous: true })
 ```
-Define a [description]() to the `TodoService` it makes it easier to find in AWS Lambda list.
+Define a [description]() for the `TodoService`, which will make it easier to find in the AWS Lambda list.
 ```js
 @description('get all Todo service')
 ```
-Now we have to create the business logic. We want to read the todos so inject the `TodoTable`. Get the items from it and return from service. If we not set the `methods` property that means its accept `GET` requests. (default: `methods: ['get']`)
+Now we have to create the business logic. We want to read the todo items, so we need to inject the `TodoTable`. Get the items from it and return from our service. If we do not set the `methods` property that means it will accept `GET` requests. (default: `methods: ['get']`)
 ```js
 import { rest, description, inject } from 'functionly'
 
@@ -58,13 +58,13 @@ export class GetAllTodos extends TodoService {
     }
 }
 ```
-We are almost done, but we have to export our service from the main file.
+We are almost done, we just have to export our service from the main file.
 ```js
 export const getAllTodos = GetAllTodos.createInvoker()
 ```
 
 ### Create todo
-We need a service to create todos, lets do this. Also define a [rest]() endpoint and a [description]().
+We need a service to create todo items, so let's do this. We will also define a [rest]() endpoint and a [description]().
 ```js
 import { rest, description } from 'functionly'
 
@@ -74,7 +74,7 @@ export class CreateTodo extends TodoService {
     public async handle() {}
 }
 ```
-We need some value to create a new todo: `name`, `description` and `status`. Expect these with the [param]() decorator and it will resolve them from the invocation context.
+We need some values to create a new todo item: `name`, `description` and `status`. Expect these with the [param]() decorator and it will resolve them from the invocation context.
 ```js
 import { rest, description, param } from 'functionly'
 
@@ -84,7 +84,7 @@ export class CreateTodo extends TodoService {
     public async handle(@param name, @param description, @param staus) {}
 }
 ```
-The business logic: save a new todo item. [Inject]() the `TodoTable` and save a new todo with the `put` function. We need an id for the new todo i use [shortid](https://www.npmjs.com/package/shortid) for generate them.
+The business logic: save a new todo item. [Inject]() the `TodoTable` and save a new todo item with the `put` function. We need an id for the new todo, in the example we'll use [shortid](https://www.npmjs.com/package/shortid) to generate them.
 ```js
 import { generate } from 'shortid'
 import { rest, description, param } from 'functionly'
@@ -112,10 +112,10 @@ export const createTodo = CreateTodo.createInvoker()
 ## Extend the example with Services
 > **Optional**
 
-Create two services: validate and persist todo. Then the CreateTodo only call these services.
+Create two services: validate and persist todo items. Then the CreateTodo has only to call these services.
 
 ### Validate todo
-It will be an [injectable]() service and expect the three todo values then implement a validation logic in the service.
+It will be an [injectable]() service and expect the three todo values, then implement a validation logic in the service.
 ```js
 import { injectable, param } from 'functionly'
 
@@ -182,36 +182,36 @@ npm run build
 ```
 
 # Run and Deploy with CLI
-The CLI helps to deploy and run the application. 
+The CLI helps you to deploy and run the application. 
 1. CLI install
 ```sh
 npm install functionly -g
 ```
 
 ## Local deployment
-1. Create DynamoDB with docker
+1. Create DynamoDB with Docker
 ```sh
 docker run -d --name dynamodb -p 8000:8000 peopleperhour/dynamodb
 ```
-2. Deploy will create the tables in the DynamoDB
-> Note: Create the [functionly.json](https://raw.githubusercontent.com/jaystack/functionly-examples/master/todoDB/functionly.json) in the project for short commands. And you don't have to pass all arguments.
+2. Deploy will create the tables in DynamoDB
+> Note: Create the [functionly.json](https://raw.githubusercontent.com/jaystack/functionly-examples/master/todoDB/functionly.json) in the project for short commands. Also, you don't have to pass all arguments.
 ```sh
 functionly deploy local
 ```
 ## Run in local environment
-In development time you can run the application in your local machine.
+During development, you can run the application on your local machine.
 ```sh
 functionly local
 ```
 
 ## AWS deployment
-> [Set up](http://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/setup-credentials.html) the AWS Credential before deploy.
+> [Set up](http://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/setup-credentials.html) AWS Credentials before deployment.
 
-> Note: Create the [functionly.json](https://raw.githubusercontent.com/jaystack/functionly-examples/master/todoDB/functionly.json) in the project for short commands. And you don't have to pass all arguments. Because the `deployTarget` is configured to `aws` (the default value configured) then in the deploy command will use this as deploy target.
+> Note: Create the [functionly.json](https://raw.githubusercontent.com/jaystack/functionly-examples/master/todoDB/functionly.json) in the project for short commands. Also, you don't have to pass all arguments. As the `deployTarget` is configured as `aws` (the default value configured) then the deploy command will use this as deployment target.
 
-Functionly create the package and deploy the application to AWS. The package is a [CloudFormation](https://aws.amazon.com/cloudformation/) template, its contains AWS resources and the AWS can create or update the application's resources by the template.
+Functionly will create the package and deploy the application to AWS. The package is a [CloudFormation](https://aws.amazon.com/cloudformation/) template, it contains all the AWS resources so AWS can create or update the application's resources based on the template.
 ```sh
 functionly deploy
 ```
 
-> Congratulation! Now you created and deployed your first `functionly` application!
+> Congratulations! You have just created and deployed your first `functionly` application!
