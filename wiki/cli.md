@@ -81,7 +81,9 @@ List of commands
 With the package command you can create the deployment package of the application for the target environment. You can also see the deployment resources with this.
 > Not all providers support this command.
 
-> ??? Deployment usually creates a new package before deployment, any changes in the package usually does not apply at deployment. ???
+> Package creation will onl create the package which will be deployed, but if the immediate next step is deployment, then this won't be the package which is deployed as the deployment process will create its own package. Therefore, any modification on this package will be lost!
+
+
 ```sh
 functionly package
 ```
