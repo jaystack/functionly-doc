@@ -1,6 +1,6 @@
 Welcome to the functionly wiki!
 
-This wiki will show how the functionly works and how can you build your first application with functionly.
+Discover all features of functionly! Learn how to create and deploy your first application! 
 
 ### Pages
 1. Functionly
