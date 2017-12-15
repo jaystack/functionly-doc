@@ -69,7 +69,7 @@ Only the `constructor` function can handle Functionly parameter decorators ([[in
 class MyApi extends Api {
     private connection
 
-    public constrictor(
+    public constructor(
         @inject(AnOtherApi) private api: AnOtherApi,
         @inject(ConnectorService) private connectorService
     ) { }
