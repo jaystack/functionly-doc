@@ -8,4 +8,4 @@ Currently we are using [serverless](https://www.npmjs.com/package/serverless) fo
 
 ## Solution: [functionly](https://www.npmjs.com/package/functionly)
 
-We've been working on a solution for a while, especially after realizing these limitations. [Functionly](https://www.npmjs.com/package/functionly) brings the functional approach even to NodeJS hosted and serverless conventional microservices, and it solves the limitations above. You can read more [here](https://github.com/jaystack/functionly-doc/blob/master/wut.md).
+We've been working on a remedy for a while, especially after realizing these limitations. We created [Functionly](https://www.npmjs.com/package/functionly) a library, that brings the functional approach to both serverless _and_ to conventional NodeJS hosted microservices solutions, and it solves the limitations above. You can read more [here](https://github.com/jaystack/functionly-doc/blob/master/wut.md).
