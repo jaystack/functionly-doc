@@ -6,6 +6,6 @@ Currently we are using [serverless](https://www.npmjs.com/package/serverless) fo
 - **[Inline role policies are limited to 10,240 chars](http://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-limits.html)**. This is a [known issue](https://github.com/serverless/serverless/issues/2508), and we are still struggling with this. The only solution is to open roles generally, which **causes security issues**.
 - **[Disk space and lambda deployment packages are limited](http://docs.aws.amazon.com/lambda/latest/dg/limits.html)**. Our package sizes are **very close to the limit**, and we have to perform the garbage clearing on disk via jenkins.
 
-## Solution: [functionly](https://www.npmjs.com/package/functionly)
+## Solution: [functionly](https://github.com/jaystack/functionly-doc/blob/master/wut.md)
 
 We've been working on a remedy for a while, especially after realizing these limitations. We created [Functionly](https://www.npmjs.com/package/functionly), a tool, that brings the functional approach to both serverless _and_ to conventional NodeJS hosted microservices solutions, and it solves the limitations above. You can read more [here](https://github.com/jaystack/functionly-doc/blob/master/wut.md).
