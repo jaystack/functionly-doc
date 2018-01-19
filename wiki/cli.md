@@ -53,7 +53,7 @@ Just create `functionly.json` in the project root and you can set the defaults f
 Example `functionly.json `
 ```js
 {
-    "awsRegion": "eu-central-1",
+    "awsRegion": "us-east-1",
     "main": "./lib/main.js",
     "deployTarget": "aws",
     "localPort": 3000,

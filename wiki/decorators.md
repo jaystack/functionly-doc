@@ -48,7 +48,7 @@ Define an API gateway endpoint for Lambda
 ```
 
 ### Example
-API gateway endpoint in `/home` path. Your function will be available at `https://xyz.execute-api.eu-central-1.amazonaws.com/dev/home`. Path value can contain parameters and can be deep like `/home/view/{id}`
+API gateway endpoint in `/home` path. Your function will be available at `https://xyz.execute-api.us-east-1.amazonaws.com/dev/home`. Path value can contain parameters and can be deep like `/home/view/{id}`
 ```js
 @apiGateway({ path: '/home' })
 class Home extends FunctionalService {}

@@ -85,7 +85,7 @@ The [[param|decorators#param]] resolves values from the first record of the even
             "eventName": "INSERT",
             "eventVersion": "1.1",
             "eventSource": "aws:dynamodb",
-            "awsRegion": "eu-central-1",
+            "awsRegion": "us-east-1",
             "dynamodb": {
                 "ApproximateCreationDateTime": 1511966820,
                 "Keys": {
@@ -185,8 +185,8 @@ The [[param|decorators#param]] resolves values from the first record of the even
                 "Timestamp": "2017-11-29T14:47:00.353Z",
                 "SignatureVersion": "1",
                 "Signature": "abc",
-                "SigningCertUrl": "https://sns.eu-central-1.amazonaws.com/xyz.pem",
-                "UnsubscribeUrl": "https://sns.eu-central-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:...",
+                "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/xyz.pem",
+                "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:...",
                 "MessageAttributes": {}
             }
         }
