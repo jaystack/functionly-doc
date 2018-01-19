@@ -2,27 +2,27 @@
 
 ## Abstract
 
-Nowadays we have many abilities to **implement our web services within scalable cloud providers**. They provide similar interfaces to describe our business logic in an **abstract way** without scaling efforts. Including the more and more popular serverless technologies, these technologies allow the **fast prototyping**, even though that the service set of any such provider has a steep learning curve for using it professionally and deeply exploited. So we can declare the migration between two provider as the next technical effort.
+Nowadays, we have many options for **implementing web services with scalable cloud providers**. They provide similar interfaces to describe our business logic in an **abstract way** without scaling effort. Including the increasingly popular serverless architecture, these technologies allow for **fast prototyping**, even though the service components of any such provider have a steep learning curve for using it professionally. So we can declare the migration between two providers as the next technical effort.
 
-Cloud technologies once already led us to abstract our implementation of the business logic in first order (**logic abstraction**), then why should we bind us to a particular provider and adhere to that? This is the second abstraction order: the **provider abstraction**.
+Cloud technologies have already led us to abstract our implementation of business logic in the first order (**logic abstraction**), therefore why should we be bound to a particular provider? This is the second abstraction order; the **provider abstraction**.
 
 ## Motivation
 
-For example [serverless](https://www.npmjs.com/package/serverless) is a convenient, but also a very limited framework. Your serverless code is not able to migrate to an other cloud provider or even a dockerized express app. Your deployment flow is also very limited.
+For example [serverless](https://www.npmjs.com/package/serverless) is a convenient, but limited framework. Your serverless code is not able to migrate to other cloud providers or even a dockerised express app. Your deployment flow is also very limited.
 
 [Functionly](https://www.npmjs.com/package/functionly) is a more innovative concept and framework. Its principles are:
 
-1) **Logic abstraction**: Hide the process and protocol handling. Describe your services in **pure functions**, and just work with the efficient business data.
-2) **Provider abstraction**: Hide the infrastructural elements. Provide your side effects via **injection mechanism**.
+1) **Logic abstraction**: Hide the process and protocol handling. Describe your services in **pure functions**, and simply work with the efficient business data.
+2) **Provider abstraction**: Hide the infrastructure elements. Provide your side effects via an **injection mechanism**.
 3) **Unlimited control**: Ensure the access to the native and low-level implementations. Even one runtime/deploy lifecycle controlling or even native resource settings. But all of them must be defined strictly separated from your logic implementations.
 
-These principles guarantee the independency and portability of your application.
+These principles guarantee your applications are independent and portable.
 
 ### Logic abstraction
 
-Lets suppose we are developing a microservice. We all have know that a microservice defines a logic unit of the entire service and it has a sctrictly defined scope in the system. At the most of cases microservices are able to replace them gracefully without any downtime for the whole system.
+Let's suppose we are developing a microservice. We all know a microservice defines a logic unit of the entire service and has a strictly defined scope within the system. In most cases, microservices are able to replace them gracefully without any downtime for the whole system.
 
-Despite the microservice's logic is defined definitely, you have to implement a lot of things above this logic for each service:
+Even though microservices' logic is defined definitely, you have to implement a lot of things on top of this logic for each service:
 
 - HTTP request handling
 - message handling
@@ -35,13 +35,13 @@ Despite the microservice's logic is defined definitely, you have to implement a 
 
 <img alt="nanoservice draft" src="img/nanoservice.png" height="300px"/>
 
-Actually the bigest part of the service is not already your logic. Including them microservices cannot be *micro* anymore.
+Actually, the largest part of the service is not your logic. Including them as microservices means they cannot be *micro* anymore.
 
-Serverless technologies allow you to forget some stuff from this list, and from now you can focus only to your service logic. Almost...
+Serverless technologies allow you to forget items from this list, and ensures you can focus only on your service logic. Almost...
 
 ### Provider abstraction
 
-Logic abstraction is cool, but you still must ensure the cloud environment with a lot of settings:
+Logic abstraction is great, but you still need to ensure the cloud environment with the following settings:
 
 - continous integration
 - forming environment stages (`dev`, `stage`, `prod`, etc.)
@@ -54,9 +54,9 @@ Logic abstraction is cool, but you still must ensure the cloud environment with 
 - scaling parameters
 - etc
 
-This could be an other special profession, you must have these skills for every provider you ever met and work.
+Understanding each cloud environment could be a specialisation in itself meaning you need to bring in the skills for every provider you ever come across.
 
-Our aim is to give a **solution for the three principles of functionly**.
+Our aim is to provide a **solution via the three key principles of functionly**.
 
 ## [Functionly](https://www.npmjs.com/package/functionly)
 
@@ -85,11 +85,11 @@ or run locally
 functionly local
 ```
 
-[Functionly](https://www.npmjs.com/package/functionly) brings the functional approach even to nodejs hosted conventional microservices - providing you an easy way to go serverless once you are ready to give up  meddling with nodejs and docker.
+[Functionly](https://www.npmjs.com/package/functionly) brings the functional approach to nodejs hosted conventional microservices - providing you an easy way to go serverless once you are ready to give up meddling with nodejs and docker.
 
 ## Concept
 
-What happens exactly? Look at the snippet above. We made a *Login service*. The first and most important aspect, that with [functionly](https://www.npmjs.com/package/functionly) we do not implement working code, we are just doing **metaprogramming**. Every service is a meta description, from that [functionly](https://www.npmjs.com/package/functionly) is able to build a working code in several environments. For example in an [express](https://www.npmjs.com/package/express) application that will look like to similar this:
+What happens exactly? Look at the code snippet above. We created a Login service. The most important aspect with [functionly](https://www.npmjs.com/package/functionly) is we do not implement working code, we are simply **meta-programming**. Every service is a meta description and [functionly](https://www.npmjs.com/package/functionly) is able to build working code in several environments. For example in an [express](https://www.npmjs.com/package/express) application, it will look like to similar this:
 
 ```js
 express().post('/login', async ({ body: { username, password } }, res) => {
@@ -99,11 +99,11 @@ express().post('/login', async ({ body: { username, password } }, res) => {
 })
 ```
 
-In [AWS](https://aws.amazon.com/) environment the `handle` method will be a [lambda function](http://docs.aws.amazon.com/lambda/latest/dg/lambda-introduction-function.html), with `POST /login` routing.
+In [AWS](https://aws.amazon.com/) environments the `handle` method will be a [lambda function](http://docs.aws.amazon.com/lambda/latest/dg/lambda-introduction-function.html), with `POST /login` routing.
 
-This way, `Login class` never will be an instance. The `static handle` method is the only implementation in our code, which is going to be used in the implementation of [functionly](https://www.npmjs.com/package/functionly).
+This way, `Login class` never will be an instance. The `static handle` method is the only implementation (in our code) which is going to be used in the implementation of [functionly](https://www.npmjs.com/package/functionly).
 
-The `class` is only necessary for describing meta informations with decorators. **We decorate our services with metadata.** This way a service will never be just a function. This is rather one a `json` object, with a pure logic implementation as a function, something like this:
+The `class` is only necessary for describing meta informations with decorators. **We decorate our services with metadata**. This way a service will never be just a function. This is rather one `Json` object, with a pure logic implementation as a function, like the following:
 
 ```js
 {
@@ -128,18 +128,18 @@ The `class` is only necessary for describing meta informations with decorators. 
 
 This description form is more able to be a portable service.
 
-[Functionly](https://www.npmjs.com/package/functionly) resolves the dependencies, ensures the proper roles for these dependencies, ensures the environment and resources, and wraps the implementations with the given environment. That's result is an environment specific code with resource descriptors already. This will deployed to the choosen provider.
+[Functionly](https://www.npmjs.com/package/functionly) resolves the dependencies, ensures the proper roles for these dependencies, ensures the environment and resources, and wraps the implementations with the given environment. The result is environment specific code with resource descriptors already provided. This will deployed to the chosen provider.
 
 ![functionly-flow](img/functionly-flow.png)
 
-**The one of primary advantage of [functionly](https://www.npmjs.com/package/functionly) is the provider-independent code.** You can deploy your meta-code to many supported provider. And if you miss one of them, you are unrestricted for create the connector as a plugin.
+**One of the primary advantages of [functionly](https://www.npmjs.com/package/functionly) is the provider-independent code**. You can deploy your meta-code to many providers. If you miss one of them, you are unrestricted in creating the connector as a plugin.
 
 ![functionly-flow](img/functionly-providers.png)
 
 ## Easy to test
 
-The injection mechanism of [functionly](https://www.npmjs.com/package/functionly) makes easy to mock dependencies for services, because service implementations are pure side-effect-less functions.
+The injection mechanism of [functionly](https://www.npmjs.com/package/functionly) makes (easy to mock) dependencies for services, because service implementations are pure side-effect-less functions.
 
-The components of your architecture form a dependency network. You can always slice a sub-network and you can test it separately even a single servie or even a service-group.
+The components of your architecture form a dependency network. You can always slice a sub-network and test it separately, as a single service or even as a service-group.
 
 <img alt="testing" src="img/testing.png" height="400"/>
