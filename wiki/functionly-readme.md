@@ -1,24 +1,67 @@
-# Todo app with Functionly
-This quick start guide will teach you how to create a Todo app with [Functionly](https://www.npmjs.com/package/functionly).
+# functionly
 
-In this tutorial you will:
+The `functionly library` lets you build `serverless` nodejs applications on an innovative, functional, and fun by abstraction way. 
+Use the JavaScript language and the JSON syntax to describe infrastructure and entities, service dependencies, and to implement service code. Deploy your solution to cloud providers, or run containerized on your onprem servers, or locally during development time using the `functionly CLI`. 
 
-* [Create an empty es6 Functionly project](#create-an-empty-es6-functionly-project)
-* [Create a dynamo table](#create-a-dynamo-table)
-* [Create functional services](#create-functional-services)
-* [Read todos](#read-todos)
-* [Create todo](#create-todo)
-* *[Extend with Services](#extend-the-example-with-Services) - optional*
+Defining a rest service which listens on `/hello-world`:
+```js
+import { FunctionalService, rest, description, param } from 'functionly'
+
+@rest({ path: '/hello-world', anonymous: true })
+@description('hello world service')
+export class HelloWorld extends FunctionalService {
+    async handle(@param name = 'world') {
+        return `hello ${name}`
+    }
+}
+
+export const helloworld = HelloWorld.createInvoker()
+```
+Running on localhost:
+```sh
+functionly local
+```
+Try it on http://localhost:3000/hello-world?name=Joe
+
+---
+
+- [Install from npm](#install-from-npm)
+- [Getting started](#getting-started)
+- [Examples](#examples)
+
+# Install from npm:
+
+## functionly CLI
+```sh
+npm install functionly -g
+```
+
+## functionly library
+```sh
+npm install functionly
+```
+
+
+# Getting started
+
+* [Create an empty Functionly project](#create-an-empty-functionly-project)
+* [Create a Hello world service](#create-a-hello-world-service)
+    * [Resolve parameter values](#resolve-parameter-values)
+* [Create a Todo application with DynamoDB](#create-a-tododb-application-with-dynamodb)
+    * [Create a dynamo table](#create-a-dynamo-table)
+    * [Read todos](#read-todos)
+    * [Create todo](#create-todo)
+    * *[Extend with Services](#extend-the-example-with-Services) - optional*
 * [Run and Deploy with CLI](#run-and-deploy-with-cli)
 * [AWS deployment](#aws-deployment)
+* [Examples](#examples)
 
-## Create an empty es6 Functionly project
-It's a simple npm project. You can separate the source code to more files but in the example we put all of the code into the `./src/todoDB.js`
+## Create an empty Functionly project
+It's a simple npm project.
 ### Dependencies
 - functionly
-- shortid
 ```sh
-npm install --save functionly shortid
+npm install --save functionly
 ```
 
 ### Dev dependencies
@@ -54,7 +97,7 @@ Default `functionly.json`
 ```js
 {
     "awsRegion": "us-east-1",
-    "main": "./src/todoDB.js",
+    "main": "./src/index.js",
     "deployTarget": "aws",
     "localPort": 3000,
     "stage": "dev",
@@ -63,7 +106,66 @@ Default `functionly.json`
 }
 ```
 
-## Create a dynamo table
+## Create a Hello world service
+We need to create a `FunctionalService` to implement the business logic of hello world application
+```js
+import { FunctionalService } from 'functionly'
+
+export class HelloWorld extends FunctionalService {
+    async handle() {}
+}
+```
+Decorate it with the [rest]() decorator. We need a `path` and have to set the `anonymous` property to `true` because we want to call it without authentication.
+If we do not set the `methods` property that means it will accept `GET` requests. (default: `methods: ['get']`)
+```js
+@rest({ path: '/hello-world', anonymous: true })
+```
+Define a [description]() for the `HelloWorld`, which will make it easier to find in the AWS Lambda list.
+```js
+@description('hello world service')
+```
+Now we have to create the business logic. 
+```js
+import { FunctionalService, rest, description } from 'functionly'
+
+@rest({ path: '/hello-world', anonymous: true })
+@description('hello world service')
+export class HelloWorld extends FunctionalService {
+    async handle() {
+        return `hello world`
+    }
+}
+```
+We are almost done, we just have to export our service from the main file.
+```js
+export const helloworld = HelloWorld.createInvoker()
+```
+### Resolve parameter values
+In the `handle` method if you use the `@param` property decorator for a parameter then it resolve the value from a request context.
+```js
+import { FunctionalService, rest, description, param } from 'functionly'
+
+@rest({ path: '/hello-world', anonymous: true })
+@description('hello world service')
+export class HelloWorld extends FunctionalService {
+    async handle(@param name = 'world') {
+        return `hello ${name}`
+    }
+}
+
+export const helloworld = HelloWorld.createInvoker()
+```
+
+## Create a TodoDB application with DynamoDB
+Define a base class for FunctionalService to set basic Lambda settings in the AWS environment.
+```js
+import { FunctionalService, aws } from 'functionly'
+
+@aws({ type: 'nodejs6.10', memorySize: 512, timeout: 3 })
+export class TodoService extends FunctionalService { }
+```
+
+### Create a dynamo table
 We need a DynamoTable because we want to store todo items. It will be named as `TodoTable`.
 ```js
 import { DynamoTable, dynamoTable, injectable } from 'functionly'
@@ -71,15 +173,6 @@ import { DynamoTable, dynamoTable, injectable } from 'functionly'
 @injectable()
 @dynamo()
 export class TodoTable extends DynamoTable { }
-```
-
-## Create functional services
-Define a base class for FunctionalService to set basic Lambda settings in the AWS environment.
-```js
-import { FunctionalService, aws } from 'functionly'
-
-@aws({ type: 'nodejs6.10', memorySize: 512, timeout: 3 })
-export class TodoService extends FunctionalService { }
 ```
 
 ### Read todos
@@ -90,6 +183,7 @@ export class GetAllTodos extends TodoService {
 }
 ```
 Decorate it with the [rest]() decorator. We need a `path` and have to set the `cors` and the `anonymous` properties to `true` because we want to call it without authentication and from another domain.
+If we do not set the `methods` property that means it will accept `GET` requests. (default: `methods: ['get']`)
 ```js
 @rest({ path: '/getAllTodos', cors: true, anonymous: true })
 ```
@@ -97,7 +191,7 @@ Define a [description]() for the `TodoService`, which will make it easier to fin
 ```js
 @description('get all Todo service')
 ```
-Now we have to create the business logic. We want to read the todo items, so we need to inject the `TodoTable`. Get the items from it and return from our service. If we do not set the `methods` property that means it will accept `GET` requests. (default: `methods: ['get']`)
+Now we have to create the business logic. We want to read the todo items, so we need to inject the `TodoTable`. Get the items from it and return from our service. 
 ```js
 import { rest, description, inject } from 'functionly'
 
@@ -268,3 +362,16 @@ functionly deploy
 ```
 
 > Congratulations! You have just created and deployed your first `functionly` application!
+
+# Examples
+- https://github.com/jaystack/functionly-examples
+
+## Typescript
+- [todoDB](https://github.com/jaystack/functionly-examples/tree/master/todoDB)
+- [todoDB-mongo](https://github.com/jaystack/functionly-examples/tree/master/todoDB-mongo)
+- [todoDBAdvanced](https://github.com/jaystack/functionly-examples/tree/master/todoDBAdvanced)
+- [eventSource](https://github.com/jaystack/functionly-examples/tree/master/eventSource)
+
+## ES6
+- [greeter](https://github.com/jaystack/functionly-examples/tree/master/greeter)
+- [todoDB-es6](https://github.com/jaystack/functionly-examples/tree/master/todoDB-es6)
