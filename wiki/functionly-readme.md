@@ -1,6 +1,6 @@
 # functionly
 
-The `functionly library` lets you build `serverless` nodejs applications on an innovative, functional, and fun by abstraction way. 
+The `functionly library` lets you build `serverless` nodejs applications in an innovative, functional, and fun by abstraction way. 
 Use the JavaScript language and the JSON syntax to describe infrastructure and entities, service dependencies, and to implement service code. Deploy your solution to cloud providers, or run containerized on your onprem servers, or locally during development time using the `functionly CLI`. 
 
 Defining a rest service which listens on `/hello-world`:
@@ -141,7 +141,7 @@ We are almost done, we just have to export our service from the main file.
 export const helloworld = HelloWorld.createInvoker()
 ```
 ### Resolve parameter values
-In the `handle` method if you use the `@param` property decorator for a parameter then it resolve the value from a request context.
+In the `handle` method if you use the `@param` property decorator for a parameter then it resolves the value from a request context.
 ```js
 import { FunctionalService, rest, description, param } from 'functionly'
 
@@ -166,7 +166,7 @@ export class TodoService extends FunctionalService { }
 ```
 
 ### Create a dynamo table
-We need a DynamoTable because we want to store todo items. It will be named as `TodoTable`.
+We need a DynamoTable, called `TodoTable` because we want to store todo items.  
 ```js
 import { DynamoTable, dynamoTable, injectable } from 'functionly'
 
@@ -176,7 +176,7 @@ export class TodoTable extends DynamoTable { }
 ```
 
 ### Read todos
-We need to create a service to read a todo items.
+We need to create a service to read todo items.
 ```js
 export class GetAllTodos extends TodoService {
     async handle() {}
@@ -220,7 +220,7 @@ export class CreateTodo extends TodoService {
     async handle() {}
 }
 ```
-We need some values to create a new todo item: `name`, `description` and `status`. Expect these with the [param]() decorator and it will resolve them from the invocation context.
+We need some values to create a new todo item: `name`, `description` and `status`. Expect these with the [param]() decorator, and it will resolve them from the invocation context.
 ```js
 import { rest, description, param } from 'functionly'
 
@@ -230,7 +230,7 @@ export class CreateTodo extends TodoService {
     async handle(@param name, @param description, @param staus) {}
 }
 ```
-The business logic: save a new todo item. [Inject]() the `TodoTable` and save a new todo item with the `put` function. We need an id for the new todo, in the example we'll use [shortid](https://www.npmjs.com/package/shortid) to generate them.
+The business logic: save a new todo item. [Inject]() the `TodoTable` and save a new todo item with the `put` function. We need an id for the new todo, in the example, we'll use [shortid](https://www.npmjs.com/package/shortid) to generate them.
 ```js
 import { generate } from 'shortid'
 import { rest, description, param } from 'functionly'
@@ -275,7 +275,7 @@ export class ValidateTodo extends Service {
 ```
 
 ### Persist todo
-It will be an [injectable]() service and expect the three todo values and [inject]() a `TodoTable` then implement a persit logic in the service.
+It will be an [injectable]() service and expect the three todo values and [inject]() a `TodoTable` then implement a persist logic in the service.
 ```js
 import { injectable, param, inject } from 'functionly'
 
