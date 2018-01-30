@@ -24,11 +24,11 @@ Available classes in Functionly
 This is the base class for every resource that Functionly can use. It manages the environment variables propagation to the [FunctionalServices](#functionalservice)
  
 ## FunctionalService
-FunctionalServices are the entrypoints of the applications. These can subscribe to the event sources when annotated with [[rest|decorators#rest]] or [[eventSource|decorators#eventsource]] decorators. The services have to implement a public `handle` method which contains a business logic. These can inject other resources ([Api](#api), [Service](#service) or an other [FunctionalService](#functionalservice)) or collect parameters ([[param|decorators#param]], [[stage|decorators#stage]], etc...)
+FunctionalServices are the entrypoints of the applications. These can subscribe to the event sources when annotated with [[rest|decorators#rest]] or [[eventSource|decorators#eventsource]] decorators. The services have to implement a `handle` method which contains a business logic. These can inject other resources ([Api](#api), [Service](#service) or an other [FunctionalService](#functionalservice)) or collect parameters ([[param|decorators#param]], [[stage|decorators#stage]], etc...)
 ```js
 @rest({ path: '/helloworld' })
 class Home extends FunctionalService {
-    public async handle(@param name) {
+    async handle(@param name) {
         return `hello ${name}`
     }
 }
@@ -40,7 +40,7 @@ You can inject a FunctionalService from another FunctionalService. In AWS it's a
 ```js
 @rest({ path: '/helloworld' })
 class About extends FunctionalService {
-    public async handle(@param name, @inject(Home) home) {
+    async handle(@param name, @inject(Home) home) {
         const homeResult = await home.invoke({ name })
         return { homeResult }
     }
@@ -49,13 +49,13 @@ class About extends FunctionalService {
 !!! known issue: For the local environment: you have to decorate the injected [FunctionalService](#functionalservice) with the [[rest|decorators#rest]] decorator because it is called over the first exposed endpoint.
 
 ## Service
-Services help to organize code you want reuse with [[inject|decorators#inject]]. Services are stateless but if you need states then use [Api](#api). Services have to implement a public `handle` method. These services can only resolve invoke parameters with [[param|decorators#param]] decorator so they can't read for example from the request body.
+Services help to organize code you want reuse with [[inject|decorators#inject]]. Services are stateless but if you need states then use [Api](#api). Services have to implement a `handle` method. These services can only resolve invoke parameters with [[param|decorators#param]] decorator so they can't read for example from the request body.
 
 ### Definition
 ```js
 @injectable()
 class Greeter extends Service {
-    public async handle(@param name) {
+    async handle(@param name) {
         return `hello ${name}`
     }
 }
@@ -64,7 +64,7 @@ class Greeter extends Service {
 ```js
 @rest({ path: '/helloworld' })
 class Home extends FunctionalService {
-    public async handle(@param name, @inject(Greeter) greeter) {
+    async handle(@param name, @inject(Greeter) greeter) {
         return await greeter({ name })
     }
 }
@@ -78,21 +78,21 @@ All other functions on these classes are simple JavaScript functions.
 ```js
 @injectable()
 class NameValidator extends Service {
-    public async handle(@param name) {
+    async handle(@param name) {
         return name === 'John'
     }
 }
 @injectable()
 class GreeterApi extends Api {
-    public constructor(@inject(NameValidator) private nameValidator) { }
-    public async init() { }
+    constructor(@inject(NameValidator) private nameValidator) { }
+    async init() { }
 
-    public async hello(name) {
+    async hello(name) {
         if (await this.nameValidator(name))
             return `hello ${name}`
         return `hello anonymous`
     }
-    public async bye(name) {
+    async bye(name) {
         return `bye ${name}`
     }
 }
@@ -101,7 +101,7 @@ class GreeterApi extends Api {
 ```js
 @rest({ path: '/helloworld' })
 class Home extends FunctionalService {
-    public async handle(@param name, @inject(GreeterApi) greeter: GreeterApi) {
+    async handle(@param name, @inject(GreeterApi) greeter) {
         return await greeter.hello(name)
     }
 }
@@ -116,7 +116,7 @@ Hooks are middleware in Functionly, and you can chain them with the [[use|decora
 ```js
 @injectable()
 class ResolveUser extends PreHook {
-    public async handle(@param name, @param age) {
+    async handle(@param name, @param age) {
         return { name, age }
     }
 }
@@ -124,7 +124,7 @@ class ResolveUser extends PreHook {
 @rest({ path: '/helloworld' })
 @use(ResolveUser)
 class Home extends FunctionalService {
-    public async handle(@param name, @inject(ResolveUser) user) {
+    async handle(@param name, @inject(ResolveUser) user) {
         console.log(user)
     }
 }
@@ -135,11 +135,11 @@ class Home extends FunctionalService {
 Hooks are middleware in Functionly, and you can chain them with the [[use|decorators#use]] decodator on [FunctionalServices](#functionalservice) or another [Hook](#hook). PostHooks are running `after` the decorated class. With the `@use(TransformResult)` decoration the `TransformResult` hook can be bound to the `Home` FunctionalService.
 ```js
 class TransformResult extends PostHook {
-    public async handle(@result result) {
+    async handle(@result result) {
         return { result }
     }
 
-    public async catch(@error error) {
+    async catch(@error error) {
         return { error }
     }
 }
@@ -147,7 +147,7 @@ class TransformResult extends PostHook {
 @rest({ path: '/helloworld' })
 @use(TransformResult)
 class Home extends FunctionalService {
-    public async handle() {
+    async handle() {
         return [1, 2, 3]
     }
 }

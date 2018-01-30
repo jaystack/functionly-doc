@@ -42,7 +42,7 @@ Define an API gateway endpoint for Lambda
 @apiGateway({
     path: string,
     method?: string = 'get',
-    cors?: boolean = false,
+    cors?: boolean = true,
     authorization?: 'AWS_IAM' | 'NONE' | 'CUSTOM' | 'COGNITO_USER_POOLS' = 'AWS_IAM'
 })
 ```
@@ -112,7 +112,6 @@ Set up a Dynamo table for the application. It allows you to store data with the 
 ### Default values
 #### environmentKey: 
 This environment variable will contains the current table name
-> !!! Known issue: Do not change the default value
 ```js
 %ClassName%_TABLE_NAME
 ```
@@ -294,7 +293,6 @@ Set up an S3 file storage for the application. It allows you to store files with
 
 ### Default values
 #### environmentKey
-> !!! Known issue: Do not change the default value
 ```js
 %ClassName%_S3_BUCKET
 ```
@@ -332,7 +330,6 @@ Set up an Simple Notification Service for the application. It allows you to send
 
 ### Default values
 #### environmentKey
-> !!! Known issue: Do not change the default value
 ```js
 %ClassName%_SNS_TOPICNAME
 ```
@@ -396,7 +393,7 @@ There is a simple dependency injection system in Functionly. After you mark the 
 ### Example
 ```js
 class Home extends FunctionalService {
-    public async handle(@inject(Api) api) { }
+    async handle(@inject(Api) api) { }
 }
 ```
 
@@ -413,7 +410,7 @@ With `param` parameter decorator, you can resolve values from event sources. For
 There are several ways to use `param` decorator
 ```js
 class Home extends FunctionalService {
-    public async handle(
+    async handle(
         @param('name') name,
         @param name,
         @param({ property: 'myValue' }) age,
@@ -429,7 +426,7 @@ By using this, you can get the original parameters of the event source. In the *
 ### Example
 ```js
 class Home extends FunctionalService {
-    public async handle(@serviceParams rawServiceParameters) { }
+    async handle(@serviceParams rawServiceParameters) { }
 }
 ```
 
@@ -442,7 +439,7 @@ With the `request` decorator, you can get request data from both local and AWS r
 {
     url: Url,
     method: string,
-    body: Object,
+    body: Object | string,
     query: Object,
     params: Object,
     headers: Object
@@ -452,7 +449,7 @@ With the `request` decorator, you can get request data from both local and AWS r
 ### Example
 ```js
 class Home extends FunctionalService {
-    public async handle(@request requestData) { }
+    async handle(@request requestData) { }
 }
 ```
 
@@ -463,7 +460,7 @@ The `result` decorator can resolve the previous middleware result. For example, 
 ### Example
 ```js
 class ResponseTransform extends PostHook {
-    public async handle(@result result) { }
+    async handle(@result result) { }
 }
 ```
 
@@ -474,7 +471,7 @@ It is only usable in [[PostHook|classes#posthook]]'s catch handler to handle err
 ### Example
 ```js
 class ResponseTransform extends PostHook {
-    public async catch(@error error) { }
+    async catch(@error error) { }
 }
 ```
 
@@ -485,7 +482,7 @@ Get the [[FunctionalService|classes#functionalservice]]'s name dynamically with 
 ### Example
 ```js
 class Home extends FunctionalService {
-    public async handle(@functionalServiceName name) { }
+    async handle(@functionalServiceName name) { }
 }
 ```
 
@@ -496,7 +493,7 @@ Get the current environment name. It is `local` in a local environment or `aws` 
 ### Example
 ```js
 class Home extends FunctionalService {
-    public async handle(@provider providerKey) { }
+    async handle(@provider providerKey) { }
 }
 ```
 
@@ -507,6 +504,6 @@ Get the current stage name.
 ### Example
 ```js
 class Home extends FunctionalService {
-    public async handle(@stage stage) { }
+    async handle(@stage stage) { }
 }
 ```

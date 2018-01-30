@@ -67,19 +67,20 @@ Only the `constructor` function can handle Functionly parameter decorators ([[in
 ```js
 @injectable()
 class MyApi extends Api {
-    private connection
+    constructor(
+        @inject(AnOtherApi) api,
+        @inject(ConnectorService) connectorService
+    ) {
+        this.api = api
+        this.connectorService = connectorService
+    }
 
-    public constructor(
-        @inject(AnOtherApi) private api: AnOtherApi,
-        @inject(ConnectorService) private connectorService
-    ) { }
-
-    private async init(){
-        this.connection = this.connectorService({ serviceParam1: true })
+    async init(){
+        this.connection = await this.connectorService({ serviceParam1: true })
     }
 
     /* custom function */
-    public async hasConnection(){
+    async hasConnection(){
         return this.connection ? true : false
     }
 }
@@ -91,7 +92,7 @@ Lifecycle of the `MyApi` in Functionly when it is injected.
 3. Injection occurs -> run the code that has injected the Api
 ```js
 class MyService extends Service {
-    public async handle(@inject(MyApi) myApi: MyApi) {
+    async handle(@inject(MyApi) myApi) {
         /* myApi already initialized */
         myApi.hasConnection() // -> true
     }
@@ -104,7 +105,7 @@ class MyService extends Service {
 Only `handle` functions can handle parameter decorators like ([[param|decorators#param]], [[inject|decorators#inject]], etc..). Parameter value will be an initialized instance of an injected type.
 ```js
 class MyService extends Service {
-    public async handle(@inject(MyApi) myApi: MyApi) {
+    async handle(@inject(MyApi) myApi) {
         /* myApi already initialized */
         myApi.hasConnection() // -> true
     }
@@ -115,13 +116,13 @@ Injected value will be an async function which calls the service invoke method. 
 ```js
 @injectable()
 class MyService extends Service {
-    public async handle(@param p1: string, @param p2: string) {
+    async handle(@param p1, @param p2) {
         return p1 + p2
     }
 }
 
 class Home extends FunctionalService {
-    public async handle(@inject(MyService) service) {
+    async handle(@inject(MyService) service) {
         /* service is a funtion */
         const result = await service({ p1: 'value1', p2: 'value2' })
         console.log(result) // -> 'value1value2'
@@ -134,7 +135,7 @@ class Home extends FunctionalService {
 Only `handle` functions can handle parameter decorators like ([[param|decorators#param]], [[inject|decorators#inject]], etc..). Parameter value will be an initialized instance of an injected type.
 ```js
 class Home extends FunctionalService {
-    public async handle(@inject(MyApi) myApi: MyApi) {
+    async handle(@inject(MyApi) myApi) {
         /* myApi already initialized */
         myApi.hasConnection() // -> true
     }
@@ -149,13 +150,13 @@ In different environments it has different implementations.
 ```js
 @injectable()
 class Validate extends FunctionalService {
-    public async handle(@param p1: string, @param p2: string) {
+    async handle(@param p1, @param p2) {
         return p1 + p2 !== p2 + p1
     }
 }
 
 class Home extends FunctionalService {
-    public async handle(@inject(Validate) validate: Validate) {
+    async handle(@inject(Validate) validate) {
         /* service is a funtion */
         const result = await validate.invoke({ p1: 'value1', p2: 'value2' })
         console.log(result) // -> true
@@ -168,7 +169,7 @@ Functionly supports [[PreHooks|classes#prehook]] and [[PostHooks|classes#posthoo
 Both type of Hooks have `handle` method and can inject classes.
 ```js
 class Auth extends PreHook {
-    public async handle(@inject(MyApi) myApi: MyApi) {
+    async handle(@inject(MyApi) myApi) {
         /* myApi already initialized */
         myApi.hasConnection() // -> true
     }
@@ -177,7 +178,7 @@ class Auth extends PreHook {
 [[PostHooks|classes#posthook]] has a `catch` method which also can use inject parameter decorators.
 ```js
 class MyPostHook extends PostHook {
-    public async catch(@inject(MyApi) myApi: MyApi) {
+    async catch(@inject(MyApi) myApi) {
         /* myApi already initialized */
         myApi.hasConnection() // -> true
     }
@@ -189,14 +190,14 @@ PreHook injection has a special resolution, it does not return the instance of t
 ```js
 @injectable()
 class HelloWorld extends PreHook {
-    public async handle(@param name) {
+    async handle(@param name) {
         return `hello ${name}`
     }
 }
 
 @use(HelloWorld)
 class Home extends FunctionalService {
-    public async handle(@inject(HelloWorld) helloWorld){
+    async handle(@inject(HelloWorld) helloWorld){
         console.log(helloWorld) // => 'hello functionly' if the name parameter is 'functionly'
         return helloWorld
     }
@@ -212,13 +213,13 @@ Lifecycle of the class in Functionly when it is injected.
 3. Injection occurs -> run the code which has injected the Api
 ```js
 class MyClass {
-    public hello(name) {
+    hello(name) {
         return `hello ${name}`
     }
 }
 
 class MyService extends Service {
-    public async handle(@inject(MyClass) myClass: MyClass) {
+    async handle(@inject(MyClass) myClass) {
         myClass.hello('functionly') // -> 'hello functionly'
     }
 }

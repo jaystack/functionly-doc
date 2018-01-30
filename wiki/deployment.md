@@ -50,7 +50,7 @@ class Users extends DynamoTable {}
 The name of the DynamoTable will be `Users-table-dev` in AWS. Also, Functionly will know the stage when running and use it to access the proper table during runtime.
 ```js
 export class CreateUser extends Service {
-    public async handle(@param userData, @inject(Users) users: Users) {
+    async handle(@param userData, @inject(Users) users) {
         await users.put({ Item: userData })
     }
 }
@@ -65,6 +65,8 @@ By default, in local environment Functionly uses local DynamoDB. You need a Dyna
 > The `package` command of CLI is not supported. It directly checks the DynamoDB.
 
 ## AWS deployment
+> Disclaimer: As functionly provisions AWS services, charges may apply to your AWS account. We suggest you to visit https://aws.amazon.com/pricing/services/ to revise the possible AWS costs.
+
 The deployment of the application in an AWS environment is done via [CloudFormation](https://aws.amazon.com/cloudformation/). Packaging creates CloudFormation templates and these will be used to create and update the application resources (IAM roles, Lambdas, Dynamo tables, S3 storages, etc...)
 
 # Plugins

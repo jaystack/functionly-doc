@@ -11,7 +11,5 @@ Discover all features of functionly! Learn how to create and deploy your first a
 2. Functionly CLI
     * [[CLI|cli]]
     * [[Deployment|deployment]]
-3. Example app
-    * [[Todo app|todoapp]]
- 
+
  

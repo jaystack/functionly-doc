@@ -16,7 +16,7 @@ The [[param|decorators#param]] property decorator is for resolving parameter val
 There are several ways to use the `param` decorator
 ```js
 class Home extends FunctionalService {
-    public async handle(
+    async handle(
         @param('name') p1, // 1
         @param name, // 2
         @param({ name: 'name' }) p3, // 3
@@ -67,7 +67,7 @@ The Api Gateway event object
 Functional service that resolves the `Authorization` token from the header and the `username` from the query
 ```js
 class MyService extends FunctionalService {
-    public async handle(@param username, @param Authorization) {
+    async handle(@param username, @param Authorization) {
         // after the call
         console.log(username)           // => 'John'
         console.log(Authorization)      // => 'abc'
@@ -113,7 +113,7 @@ The [[param|decorators#param]] resolves values from the first record of the even
 Functional service that resolves the `dynamodb` data
 ```js
 class MyService extends FunctionalService {
-    public async handle(@param dynamodb) {
+    async handle(@param dynamodb) {
         // after the call
         console.log(dynamodb.ApproximateCreationDateTime) // => 1511966820
     }
@@ -160,7 +160,7 @@ The [[param|decorators#param]] resolves values from the first record of the even
 Functional service that resolves the `s3` data
 ```js
 class MyService extends FunctionalService {
-    public async handle(@param s3) {
+    async handle(@param s3) {
         // after the call
         console.log(s3.bucket.name) // => "filestorage-bucket-dev"
     }
@@ -196,7 +196,7 @@ The [[param|decorators#param]] resolves values from the first record of the even
 Functional service that resolves the `Sns` data
 ```js
 class MyService extends FunctionalService {
-    public async handle(@param Sns) {
+    async handle(@param Sns) {
         // after the call
         console.log(Sns.Message) // => "my message Joh"
     }
@@ -210,7 +210,7 @@ class MyService extends FunctionalService {
 Before calling the service, you have to [[inject|decorators#inject]] it. The injection's result is a function. It has a special signature: the first parameter of the call is an object which contains the parameters.
 ```js
 class Home extends FunctionalService {
-    public async handle(@inject(MyService) service) {
+    async handle(@inject(MyService) service) {
         // service invocation
         await service({ username: 'John', age: 42 })
     }
@@ -220,7 +220,7 @@ You can expect parameters on the service side. The object properties of the call
 ```js
 @injectable()
 class MyService extends Service {
-    public async handle(@param username, @param age) {
+    async handle(@param username, @param age) {
         // after the call
         console.log(username)   // => 'John'
         console.log(age)        // => 42
@@ -235,10 +235,10 @@ Everything works here which does in [FunctionalService](#param-in-functionalserv
 These are special value resolvers. The `handle` method can use the [[result|decorators#result]] parameter decorator to get the result of [[FunctionalService|classes#functionalservice]] (or that of the previous [[PostHook|classes#posthook]]). `catch` can handle and transform errors and use the [[error|decorators#error]] decorator to get the error from the PreHook, from the FunctionalService or the last PostHook's error. The return value will be the new result. The error that is thrown will be the new error.
 ```js
 class ResultTransform extends PostHook {
-    public async handle(@result result) {
+    async handle(@result result) {
         console.log(result)
     }
-    public async catch(@error error) {
+    async catch(@error error) {
         console.log(error)
     }
 }
@@ -248,7 +248,7 @@ class ResultTransform extends PostHook {
 It's not possible to use the [param](#param-decorator) decorator in [[Api|classes#api]]. Inject your required services in `constructor` and expect the requred parameters in API's functions like a simple parameter.
 ```js
 class MyApi extends Api {
-    public myFunction(p1: string, p2: string) {
+    myFunction(p1, p2) {
         return p1 + p2
     }
 }
@@ -275,7 +275,7 @@ The name property can refer to the deep property of the event. If the path does 
 Extended [DynamoTable](#dynamotable) example
 ```js
 class MyService extends FunctionalService {
-    public async handle(@param('dynamodb.ApproximateCreationDateTime') time) {
+    async handle(@param('dynamodb.ApproximateCreationDateTime') time) {
         // after the call
         console.log(time) // => 1511966820
     }
@@ -296,7 +296,7 @@ Each event source handler has its own strategy to resolve parameters, but with t
     Extended [rest and apiGateway](#rest-and-apiGateway) example: get the username from the original event parameter of the event context. 
     ```js
     class MyService extends FunctionalService {
-        public async handle(
+        async handle(
             @param({ source: null, name: 'event.event.queryStringParameters.username' }) username, 
             @param Authorization
         ) {
@@ -311,7 +311,7 @@ Each event source handler has its own strategy to resolve parameters, but with t
     Extended [rest and apiGateway](#rest-and-apiGateway) example: get the username from a custom source. 
     ```js
     class MyService extends FunctionalService {
-        public async handle(
+        async handle(
             @param({ source: 'event.event.queryStringParameters' }) username, 
             @param Authorization
         ) {
