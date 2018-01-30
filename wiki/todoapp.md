@@ -3,6 +3,7 @@ This quick start guide will teach you how to create a Todo app with [Functionly]
 
 In this tutorial you will:
 
+* [Create an empty Functionly project](#create-an-empty-functionly-project)
 * [Create a dynamo table](#create-a-dynamo-table)
 * [Create functional services](#create-functional-services)
 * [Read todos](#read-todos)
@@ -11,13 +12,55 @@ In this tutorial you will:
 * [Run and Deploy with CLI](#run-and-deploy-with-cli)
 * [AWS deployment](#aws-deployment)
 
+## Create an empty Functionly project
+It's a simple npm project. You can separate the source code to more files but in the example we put all of the code into the `./src/todoDB.js`
+
+### Dependencies
+- functionly
+- shortid
+```sh
+npm install --save functionly shortid
+```
+
+### Dev dependencies
+Functionly uses webpack with babel for compile the code.
+- babel-core
+- babel-loader
+- babel-preset-functionly-aws
+```sh
+npm install --save-dev babel-core babel-loader babel-preset-functionly-aws
+```
+
+### Babel configuration
+Default `.babelrc`
+
+```js
+{
+  "presets": [ "functionly-aws" ]
+}
+```
+
+### Functionly configuration
+The `functionly.json`
+```js
+{
+    "awsRegion": "us-east-1",
+    "main": "./src/todoDB.js",
+    "deployTarget": "aws",
+    "localPort": 3000,
+    "stage": "dev",
+    "watch": true,
+    "compile": "babel-loader"
+}
+```
+
 ## Create a dynamo table
 We need a DynamoTable because we want to store todo items. It will be named as `TodoTable`.
 ```js
 import { DynamoTable, dynamoTable, injectable } from 'functionly'
 
 @injectable()
-@dynamoTable({ tableName: '%ClassName%_corpjs_functionly' })
+@dynamo()
 export class TodoTable extends DynamoTable { }
 ```
 
@@ -34,10 +77,10 @@ export class TodoService extends FunctionalService { }
 We need to create a service to read a todo items.
 ```js
 export class GetAllTodos extends TodoService {
-    public async handle() {}
+    async handle() {}
 }
 ```
-Decorate it with the [rest]() decorator. We need a `path` and have to set the `cors` and the `anonymous` properties to `true` because we want to call it without authentication and from another domain.
+If you want your service to be accessible with a web request over a rest interface then you have to decorate it with the [rest]() decorator. We need a `path` and have to set the `cors` and the `anonymous` properties to `true` because we want to call it without authentication and from another domain.
 ```js
 @rest({ path: '/getAllTodos', cors: true, anonymous: true })
 ```
@@ -52,8 +95,8 @@ import { rest, description, inject } from 'functionly'
 @rest({ path: '/getAllTodos', cors: true, anonymous: true })
 @description('get all Todo service')
 export class GetAllTodos extends TodoService {
-    public async handle(@inject(TodoTable) db: TodoTable) {
-        let items: any = await db.scan()
+    async handle(@inject(TodoTable) db) {
+        let items = await db.scan()
         return { ok: 1, items }
     }
 }
@@ -71,7 +114,7 @@ import { rest, description } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    public async handle() {}
+    async handle() {}
 }
 ```
 We need some values to create a new todo item: `name`, `description` and `status`. Expect these with the [param]() decorator and it will resolve them from the invocation context.
@@ -81,7 +124,7 @@ import { rest, description, param } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    public async handle(@param name, @param description, @param staus) {}
+    async handle(@param name, @param description, @param staus) {}
 }
 ```
 The business logic: save a new todo item. [Inject]() the `TodoTable` and save a new todo item with the `put` function. We need an id for the new todo, in the example we'll use [shortid](https://www.npmjs.com/package/shortid) to generate them.
@@ -92,7 +135,7 @@ import { rest, description, param } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    public async handle(@param name, @param description, @param status, @inject(TodoTable) db: TodoTable) {
+    async handle(@param name, @param description, @param status, @inject(TodoTable) db) {
         let item = {
             id: generate(),
             name,
@@ -121,7 +164,7 @@ import { injectable, param } from 'functionly'
 
 @injectable()
 export class ValidateTodo extends Service {
-    public async handle( @param name, @param description, @param status) {
+    async handle( @param name, @param description, @param status) {
         const isValid = true
         return { isValid }
     }
@@ -135,7 +178,7 @@ import { injectable, param, inject } from 'functionly'
 
 @injectable()
 export class PersistTodo extends Service {
-    public async handle( @param name, @param description, @param status, @inject(TodoTable) db: TodoTable) {
+    async handle( @param name, @param description, @param status, @inject(TodoTable) db) {
         let item = {
             id: generate(),
             name,
@@ -156,7 +199,7 @@ import { rest, description, param, inject } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    public async handle( 
+    async handle( 
         @param name, 
         @param description, 
         @param status, 
@@ -173,12 +216,11 @@ export class CreateTodo extends TodoService {
 }
 ```
 
-### The source code of this example is available [here](https://github.com/jaystack/functionly-examples/tree/master/todoDB)
+### The source code of this example is available [here](https://github.com/jaystack/functionly-examples/tree/master/todoDB-es6)
 
-# Install and Build
+# Install
 ```sh
 npm install
-npm run build
 ```
 
 # Run and Deploy with CLI
@@ -205,6 +247,8 @@ functionly local
 ```
 
 ## AWS deployment
+> Disclaimer: As functionly provisions AWS services, charges may apply to your AWS account. We suggest you to visit [https://aws.amazon.com/pricing/services/](https://aws.amazon.com/pricing/services/) to revise the possible AWS costs.
+
 > [Set up](http://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/setup-credentials.html) AWS Credentials before deployment.
 
 > Note: Create the [functionly.json](https://raw.githubusercontent.com/jaystack/functionly-examples/master/todoDB/functionly.json) in the project for short commands. Also, you don't have to pass all arguments. As the `deployTarget` is configured as `aws` (the default value configured) then the deploy command will use this as deployment target.

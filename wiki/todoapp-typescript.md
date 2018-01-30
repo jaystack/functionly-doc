@@ -3,7 +3,7 @@ This quick start guide will teach you how to create a Todo app with [Functionly]
 
 In this tutorial you will:
 
-* [Create an empty es6 Functionly project](#create-an-empty-es6-functionly-project)
+* [Create an empty Functionly project](#create-an-empty-functionly-project)
 * [Create a dynamo table](#create-a-dynamo-table)
 * [Create functional services](#create-functional-services)
 * [Read todos](#read-todos)
@@ -12,8 +12,9 @@ In this tutorial you will:
 * [Run and Deploy with CLI](#run-and-deploy-with-cli)
 * [AWS deployment](#aws-deployment)
 
-## Create an empty es6 Functionly project
-It's a simple npm project. You can separate the source code to more files but in the example we put all of the code into the `./src/todoDB.js`
+## Create an empty Functionly project
+It's a simple npm project. You can separate the source code to more files but in the example we put all of the code into the `./src/todoDB.ts`
+
 ### Dependencies
 - functionly
 - shortid
@@ -22,34 +23,45 @@ npm install --save functionly shortid
 ```
 
 ### Dev dependencies
-Functionly uses webpack with babel for compile the code.
-- babel-core
-- babel-loader
-- babel-preset-functionly-aws
+Functionly uses webpack with typescript for compile the code.
+- typescript
+- ts-loader
 ```sh
-npm install --save-dev babel-core babel-loader babel-preset-functionly-aws
+npm install --save-dev typescript ts-loader
 ```
 
-### Babel configuration
-Default `.babelrc`
-
+### Typescript config
+Example `tsconfig.json`
 ```js
 {
-  "presets": [ "functionly-aws" ]
+  "compilerOptions": {
+    "target": "es6",
+    "outDir": "lib",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": true,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true
+  },
+  "exclude": [
+    "node_modules",
+    "lib"
+  ]
 }
 ```
 
 ### Functionly configuration
-Default `functionly.json`
+The `functionly.json`
 ```js
 {
     "awsRegion": "us-east-1",
-    "main": "./src/todoDB.js",
+    "main": "./src/todoDB.ts",
     "deployTarget": "aws",
     "localPort": 3000,
     "stage": "dev",
     "watch": true,
-    "compile": "babel-loader"
+    "compile": "ts-loader"
 }
 ```
 
@@ -76,10 +88,10 @@ export class TodoService extends FunctionalService { }
 We need to create a service to read a todo items.
 ```js
 export class GetAllTodos extends TodoService {
-    async handle() {}
+    public async handle() {}
 }
 ```
-Decorate it with the [rest]() decorator. We need a `path` and have to set the `cors` and the `anonymous` properties to `true` because we want to call it without authentication and from another domain.
+If you want your service to be accessible with a web request over a rest interface then you have to decorate it with the [rest]() decorator. We need a `path` and have to set the `cors` and the `anonymous` properties to `true` because we want to call it without authentication and from another domain.
 ```js
 @rest({ path: '/getAllTodos', cors: true, anonymous: true })
 ```
@@ -94,8 +106,8 @@ import { rest, description, inject } from 'functionly'
 @rest({ path: '/getAllTodos', cors: true, anonymous: true })
 @description('get all Todo service')
 export class GetAllTodos extends TodoService {
-    async handle(@inject(TodoTable) db) {
-        let items = await db.scan()
+    public async handle(@inject(TodoTable) db: TodoTable) {
+        let items: any = await db.scan()
         return { ok: 1, items }
     }
 }
@@ -113,7 +125,7 @@ import { rest, description } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    async handle() {}
+    public async handle() {}
 }
 ```
 We need some values to create a new todo item: `name`, `description` and `status`. Expect these with the [param]() decorator and it will resolve them from the invocation context.
@@ -123,7 +135,7 @@ import { rest, description, param } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    async handle(@param name, @param description, @param staus) {}
+    public async handle(@param name, @param description, @param staus) {}
 }
 ```
 The business logic: save a new todo item. [Inject]() the `TodoTable` and save a new todo item with the `put` function. We need an id for the new todo, in the example we'll use [shortid](https://www.npmjs.com/package/shortid) to generate them.
@@ -134,7 +146,7 @@ import { rest, description, param } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    async handle(@param name, @param description, @param status, @inject(TodoTable) db) {
+    public async handle(@param name, @param description, @param status, @inject(TodoTable) db: TodoTable) {
         let item = {
             id: generate(),
             name,
@@ -163,7 +175,7 @@ import { injectable, param } from 'functionly'
 
 @injectable()
 export class ValidateTodo extends Service {
-    async handle( @param name, @param description, @param status) {
+    public async handle( @param name, @param description, @param status) {
         const isValid = true
         return { isValid }
     }
@@ -177,7 +189,7 @@ import { injectable, param, inject } from 'functionly'
 
 @injectable()
 export class PersistTodo extends Service {
-    async handle( @param name, @param description, @param status, @inject(TodoTable) db) {
+    public async handle( @param name, @param description, @param status, @inject(TodoTable) db: TodoTable) {
         let item = {
             id: generate(),
             name,
@@ -198,7 +210,7 @@ import { rest, description, param, inject } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    async handle( 
+    public async handle( 
         @param name, 
         @param description, 
         @param status, 
@@ -215,11 +227,12 @@ export class CreateTodo extends TodoService {
 }
 ```
 
-### The source code of this example is available [here](https://github.com/jaystack/functionly-examples/tree/master/todoDB-es6)
+### The source code of this example is available [here](https://github.com/jaystack/functionly-examples/tree/master/todoDB)
 
-# Install
+# Install and Build
 ```sh
 npm install
+npm run build
 ```
 
 # Run and Deploy with CLI
@@ -246,7 +259,7 @@ functionly local
 ```
 
 ## AWS deployment
-> Disclaimer: As functionly provisions AWS services, charges may apply to your AWS account. We suggest you to visit https://aws.amazon.com/pricing/services/ to revise the possible AWS costs.
+> Disclaimer: As functionly provisions AWS services, charges may apply to your AWS account. We suggest you to visit [https://aws.amazon.com/pricing/services/](https://aws.amazon.com/pricing/services/) to revise the possible AWS costs.
 
 > [Set up](http://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/setup-credentials.html) AWS Credentials before deployment.
 
