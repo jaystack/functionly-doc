@@ -17,9 +17,8 @@ It's a simple npm project. You can separate the source code to more files but in
 
 ### Dependencies
 - functionly
-- shortid
 ```sh
-npm install --save functionly shortid
+npm install --save functionly
 ```
 
 ### Dev dependencies
