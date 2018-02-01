@@ -10,7 +10,7 @@ import { FunctionalService, rest, description, param } from 'functionly'
 @rest({ path: '/hello-world', anonymous: true })
 @description('hello world service')
 export class HelloWorld extends FunctionalService {
-    async handle(@param name = 'world') {
+    static async handle(@param name = 'world') {
         return `hello ${name}`
     }
 }
@@ -68,12 +68,9 @@ npm install --save functionly
 Functionly uses webpack with babel for compile the code.
 - babel-core
 - babel-loader
-- babel-plugin-functionly-annotations
-- babel-plugin-transform-async-to-generator
-- babel-plugin-transform-decorators-legacy
-- babel-preset-es2015-node5
+- babel-preset-functionly-aws
 ```sh
-npm install --save-dev babel-core babel-loader babel-plugin-functionly-annotations babel-plugin-transform-async-to-generator babel-plugin-transform-decorators-legacy babel-preset-es2015-node5
+npm install --save-dev babel-core babel-loader babel-preset-functionly-aws
 ```
 
 ### Babel configuration
@@ -81,14 +78,7 @@ Default `.babelrc`
 
 ```js
 {
-  "plugins": [
-    "functionly-annotations",
-    "transform-decorators-legacy",
-    "transform-async-to-generator"
-  ],
-  "presets": [
-    "es2015-node5"
-  ]
+    "presets": [ "functionly-aws" ]
 }
 ```
 
@@ -112,10 +102,10 @@ We need to create a `FunctionalService` to implement the business logic of hello
 import { FunctionalService } from 'functionly'
 
 export class HelloWorld extends FunctionalService {
-    async handle() {}
+    static async handle() {}
 }
 ```
-Decorate it with the [rest]() decorator. We need a `path` and have to set the `anonymous` property to `true` because we want to call it without authentication.
+If you want your service to be accessible with a web request over a rest interface then you have to decorate  it with the [rest]() decorator. We need a `path` and have to set the `anonymous` property to `true` because we want to call it without authentication.
 If we do not set the `methods` property that means it will accept `GET` requests. (default: `methods: ['get']`)
 ```js
 @rest({ path: '/hello-world', anonymous: true })
@@ -131,7 +121,7 @@ import { FunctionalService, rest, description } from 'functionly'
 @rest({ path: '/hello-world', anonymous: true })
 @description('hello world service')
 export class HelloWorld extends FunctionalService {
-    async handle() {
+    static async handle() {
         return `hello world`
     }
 }
@@ -148,7 +138,7 @@ import { FunctionalService, rest, description, param } from 'functionly'
 @rest({ path: '/hello-world', anonymous: true })
 @description('hello world service')
 export class HelloWorld extends FunctionalService {
-    async handle(@param name = 'world') {
+    static async handle(@param name = 'world') {
         return `hello ${name}`
     }
 }
@@ -179,10 +169,10 @@ export class TodoTable extends DynamoTable { }
 We need to create a service to read todo items.
 ```js
 export class GetAllTodos extends TodoService {
-    async handle() {}
+    static async handle() {}
 }
 ```
-Decorate it with the [rest]() decorator. We need a `path` and have to set the `cors` and the `anonymous` properties to `true` because we want to call it without authentication and from another domain.
+If you want your service to be accessible with a web request over a rest interface then you have to decorate it with the [rest]() decorator. We need a `path` and have to set the `cors` and the `anonymous` properties to `true` because we want to call it without authentication and from another domain.
 If we do not set the `methods` property that means it will accept `GET` requests. (default: `methods: ['get']`)
 ```js
 @rest({ path: '/getAllTodos', cors: true, anonymous: true })
@@ -198,7 +188,7 @@ import { rest, description, inject } from 'functionly'
 @rest({ path: '/getAllTodos', cors: true, anonymous: true })
 @description('get all Todo service')
 export class GetAllTodos extends TodoService {
-    async handle(@inject(TodoTable) db) {
+    static async handle(@inject(TodoTable) db) {
         let items = await db.scan()
         return { ok: 1, items }
     }
@@ -217,7 +207,7 @@ import { rest, description } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    async handle() {}
+    static async handle() {}
 }
 ```
 We need some values to create a new todo item: `name`, `description` and `status`. Expect these with the [param]() decorator, and it will resolve them from the invocation context.
@@ -227,7 +217,7 @@ import { rest, description, param } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    async handle(@param name, @param description, @param staus) {}
+    static async handle(@param name, @param description, @param staus) {}
 }
 ```
 The business logic: save a new todo item. [Inject]() the `TodoTable` and save a new todo item with the `put` function. We need an id for the new todo, in the example, we'll use [shortid](https://www.npmjs.com/package/shortid) to generate them.
@@ -238,7 +228,7 @@ import { rest, description, param } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    async handle(@param name, @param description, @param status, @inject(TodoTable) db) {
+    static async handle(@param name, @param description, @param status, @inject(TodoTable) db) {
         let item = {
             id: generate(),
             name,
@@ -267,7 +257,7 @@ import { injectable, param } from 'functionly'
 
 @injectable()
 export class ValidateTodo extends Service {
-    async handle( @param name, @param description, @param status) {
+    static async handle( @param name, @param description, @param status) {
         const isValid = true
         return { isValid }
     }
@@ -281,7 +271,7 @@ import { injectable, param, inject } from 'functionly'
 
 @injectable()
 export class PersistTodo extends Service {
-    async handle( @param name, @param description, @param status, @inject(TodoTable) db) {
+    static async handle( @param name, @param description, @param status, @inject(TodoTable) db) {
         let item = {
             id: generate(),
             name,
@@ -302,7 +292,7 @@ import { rest, description, param, inject } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    async handle( 
+    static async handle( 
         @param name, 
         @param description, 
         @param status, 
@@ -366,12 +356,12 @@ functionly deploy
 # Examples
 - https://github.com/jaystack/functionly-examples
 
+## Javascript
+- [greeter](https://github.com/jaystack/functionly-examples/tree/master/greeter)
+- [todoDB-es6](https://github.com/jaystack/functionly-examples/tree/master/todoDB-es6)
+
 ## Typescript
 - [todoDB](https://github.com/jaystack/functionly-examples/tree/master/todoDB)
 - [todoDB-mongo](https://github.com/jaystack/functionly-examples/tree/master/todoDB-mongo)
 - [todoDBAdvanced](https://github.com/jaystack/functionly-examples/tree/master/todoDBAdvanced)
 - [eventSource](https://github.com/jaystack/functionly-examples/tree/master/eventSource)
-
-## ES6
-- [greeter](https://github.com/jaystack/functionly-examples/tree/master/greeter)
-- [todoDB-es6](https://github.com/jaystack/functionly-examples/tree/master/todoDB-es6)
