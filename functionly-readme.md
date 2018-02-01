@@ -19,7 +19,7 @@ export const helloworld = HelloWorld.createInvoker()
 ```
 Running on localhost:
 ```sh
-functionly local
+functionly start
 ```
 Try it on http://localhost:3000/hello-world?name=Joe
 
@@ -336,7 +336,7 @@ functionly deploy local
 ## Run in local environment
 During development, you can run the application on your local machine.
 ```sh
-functionly local
+functionly start
 ```
 
 ## AWS deployment
