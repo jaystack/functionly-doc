@@ -76,7 +76,7 @@ export class TodoService extends FunctionalService { }
 We need to create a service to read a todo items.
 ```js
 export class GetAllTodos extends TodoService {
-    async handle() {}
+    static async handle() {}
 }
 ```
 If you want your service to be accessible with a web request over a rest interface then you have to decorate it with the [rest]() decorator. We need a `path` and have to set the `cors` and the `anonymous` properties to `true` because we want to call it without authentication and from another domain.
@@ -94,7 +94,7 @@ import { rest, description, inject } from 'functionly'
 @rest({ path: '/getAllTodos', cors: true, anonymous: true })
 @description('get all Todo service')
 export class GetAllTodos extends TodoService {
-    async handle(@inject(TodoTable) db) {
+    static async handle(@inject(TodoTable) db) {
         let items = await db.scan()
         return { ok: 1, items }
     }
@@ -113,7 +113,7 @@ import { rest, description } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    async handle() {}
+    static async handle() {}
 }
 ```
 We need some values to create a new todo item: `name`, `description` and `status`. Expect these with the [param]() decorator and it will resolve them from the invocation context.
@@ -123,7 +123,7 @@ import { rest, description, param } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    async handle(@param name, @param description, @param staus) {}
+    static async handle(@param name, @param description, @param staus) {}
 }
 ```
 The business logic: save a new todo item. [Inject]() the `TodoTable` and save a new todo item with the `put` function. We need an id for the new todo, in the example we'll use [shortid](https://www.npmjs.com/package/shortid) to generate them.
@@ -134,7 +134,7 @@ import { rest, description, param } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    async handle(@param name, @param description, @param status, @inject(TodoTable) db) {
+    static async handle(@param name, @param description, @param status, @inject(TodoTable) db) {
         let item = {
             id: generate(),
             name,
@@ -163,7 +163,7 @@ import { injectable, param } from 'functionly'
 
 @injectable()
 export class ValidateTodo extends Service {
-    async handle( @param name, @param description, @param status) {
+    static async handle( @param name, @param description, @param status) {
         const isValid = true
         return { isValid }
     }
@@ -177,7 +177,7 @@ import { injectable, param, inject } from 'functionly'
 
 @injectable()
 export class PersistTodo extends Service {
-    async handle( @param name, @param description, @param status, @inject(TodoTable) db) {
+    static async handle( @param name, @param description, @param status, @inject(TodoTable) db) {
         let item = {
             id: generate(),
             name,
@@ -198,7 +198,7 @@ import { rest, description, param, inject } from 'functionly'
 @rest({ path: '/createTodo', methods: ['post'], anonymous: true, cors: true })
 @description('create Todo service')
 export class CreateTodo extends TodoService {
-    async handle( 
+    static async handle( 
         @param name, 
         @param description, 
         @param status, 
