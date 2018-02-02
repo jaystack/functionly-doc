@@ -242,7 +242,7 @@ functionly deploy local
 ## Run in local environment
 During development, you can run the application on your local machine.
 ```sh
-functionly local
+functionly start
 ```
 
 ## AWS deployment
